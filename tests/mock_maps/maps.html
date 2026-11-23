@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Google Maps (MOCK untuk pengujian)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body { margin: 0; height: 100%; font-family: Arial, sans-serif; font-size: 14px; }
+  #app { width: 420px; height: 100vh; border-right: 1px solid #ddd; overflow: hidden; position: relative; }
+  .panel { display: flex; flex-direction: column; height: 100vh; }
+  .hdr { padding: 8px 12px; flex: 0 0 auto; }
+  .hdr h1 { font-size: 22px; margin: 4px 0; }
+  .tabs { display: flex; flex: 0 0 auto; border-bottom: 1px solid #ddd; }
+  .tabs button { flex: 1; padding: 10px 0; background: #fff; border: 0; border-bottom: 3px solid transparent; cursor: pointer; }
+  .tabs button[aria-selected="true"] { border-bottom-color: #1a73e8; color: #1a73e8; }
+  .body { flex: 1 1 auto; min-height: 0; }
+  .scroll { height: 100%; overflow-y: auto; }
+  .card { border-bottom: 1px solid #eee; padding: 10px 12px; }
+  .stars { color: #f9ab00; }
+  .qjESne { padding: 12px; text-align: center; display: none; }
+  .closed { color: #d93025; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  .Nv2PK { padding: 12px; border-bottom: 1px solid #eee; }
+  [role="menu"] { position: absolute; top: 120px; left: 220px; background: #fff; border: 1px solid #ccc; z-index: 10; }
+  [role="menuitemradio"] { padding: 8px 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="mock-data" type="application/json">__MOCK_DATA__</script>
+<script>
+(function () {
+  "use strict";
+  var DATA = JSON.parse(document.getElementById('mock-data').textContent);
+  var PLACES = DATA.places, GLOBAL = DATA.config || {};
+  var qs = new URLSearchParams(location.search);
+  var hl = qs.get('hl') || 'id';
+  var TXT = hl === 'en'
+    ? { overview: 'Overview', reviews: 'Reviews', about: 'About', permClosed: 'Permanently closed', tempClosed: 'Temporarily closed',
+        stars: 'stars', sort: 'Sort', menu: ['Most relevant', 'Newest', 'Highest rating', 'Lowest rating'], more: 'More', moreReviews: 'More reviews',
+        owner: 'Response from the owner', reviewsWord: 'reviews', noResult: "Google Maps can't find" }
+    : { overview: 'Ikhtisar', reviews: 'Ulasan', about: 'Tentang', permClosed: 'Tutup permanen', tempClosed: 'Tutup sementara',
+        stars: 'bintang', sort: 'Urutkan', menu: ['Paling relevan', 'Terbaru', 'Peringkat tertinggi', 'Peringkat terendah'], more: 'Selengkapnya', moreReviews: 'Ulasan lainnya',
+        owner: 'Tanggapan dari pemilik', reviewsWord: 'ulasan', noResult: 'Google Maps tidak dapat menemukan' };
+
+  var app = document.getElementById('app');
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function slug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, '+'); }
+  function norm(s) { return s.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function fmtNum(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function placeUrl(p) {
+    return '/maps/place/' + slug(p.name) + '/@-6.9,107.6,17z/data=!4m6!3m5!1s' + p.fid + '!8m2!3d-6.9!4d107.6';
+  }
+
+  // ───────────────────────────── routing ─────────────────────────────
+  var path = decodeURIComponent(location.pathname);
+  var m;
+  if ((m = path.match(/^\/maps\/search\/(.+)$/))) {
+    var q = m[1].replace(/\+/g, ' ');
+    var tokens = norm(q).split(' ').filter(function (t) { return t && t !== 'bandung'; });
+    var cands = PLACES.filter(function (p) {
+      var words = norm(p.name).split(' ');
+      // token cocok jika menjadi AWAL dari salah satu kata pada nama tempat
+      return tokens.every(function (t) { return words.some(function (w) { return w.indexOf(t) === 0; }); });
+    });
+    if (cands.length === 1 && !GLOBAL.always_list) {
+      history.replaceState(null, '', placeUrl(cands[0]) + location.search);
+      renderPlace(cands[0]);
+    } else if (cands.length >= 1) {
+      renderList(q, cands);
+    } else {
+      app.innerHTML = '<div class="panel"><div class="hdr">' + TXT.noResult + ' <b>' + esc(q) + '</b>.</div></div>';
+    }
+  } else if ((m = path.match(/^\/maps\/place\/([^/]+)/))) {
+    var sl = m[1].replace(/\+/g, '+');
+    var found = PLACES.filter(function (p) { return slug(p.name) === sl; })[0];
+    if (found) renderPlace(found);
+    else app.innerHTML = '<div class="panel"><div class="hdr">Tempat tidak ditemukan</div></div>';
+  } else {
+    app.innerHTML = '<div class="hdr">Mock Google Maps</div>';
+  }
+
+  function renderList(q, cands) {
+    // Daftar hasil pencarian: kandidat DIACAK urutannya supaya tempat yang cocok tidak selalu di atas.
+    var order = cands.slice();
+    if (GLOBAL.reverse_list) order.reverse();
+    app.innerHTML =
+      '<div class="panel"><div class="hdr"><h1 class="Lm5Wfd" style="font-size:1px;opacity:0">Hasil</h1></div>' +
+      '<div class="body"><div class="m6QErb DxyBCb kA9KIf dS8AEf scroll" role="feed" aria-label="Hasil untuk ' + esc(q) + '">' +
+      order.map(function (p) {
+        return '<div class="Nv2PK"><a class="hfpxzc" aria-label="' + esc(p.name) + '" href="' + placeUrl(p) + location.search + '"></a>' +
+               '<div class="qBF1Pd">' + esc(p.name) + '</div></div>';
+      }).join('') + '</div></div></div>';
+  }
+
+  // ───────────────────────────── halaman tempat ─────────────────────────────
+  function renderPlace(p) {
+    document.title = p.name + ' - Google Maps';
+    var variant = p.mock.variant || 'A';
+    var statusHtml = '';
+    if (p.status === 'permanent') statusHtml = '<div class="fontBodyMedium"><span class="closed">' + TXT.permClosed + '</span></div>';
+    if (p.status === 'temporary') statusHtml = '<div class="fontBodyMedium"><span class="closed">' + TXT.tempClosed + '</span></div>';
+    var ratingStr = String(p.rating).replace('.', ',');
+
+    app.innerHTML =
+      '<div class="panel m6QErb WNBkOb" role="main" aria-label="' + esc(p.name) + '">' +
+        '<div class="hdr">' +
+          '<h1 class="DUwDvf lfPIob">' + esc(p.name) + '</h1>' +
+          '<div class="F7nice"><span aria-hidden="true">' + ratingStr + '</span>' +
+            '<span role="img" aria-label="' + ratingStr + ' ' + TXT.stars + '"></span>' +
+            ' <span><span aria-label="' + fmtNum(p.total) + ' ' + TXT.reviewsWord + '">(' + fmtNum(p.total) + ')</span></span></div>' +
+          '<button class="DkEaL" jsaction="pane.rating.category">' + esc(p.category) + '</button>' +
+          statusHtml +
+        '</div>' +
+        '<div class="tabs RWPxGd">' +
+          '<button class="hh2c6" role="tab" data-tab-index="0" aria-selected="true" aria-label="' + TXT.overview + ' untuk ' + esc(p.name) + '">' + TXT.overview + '</button>' +
+          '<button class="hh2c6" role="tab" data-tab-index="1" aria-selected="false" aria-label="' + TXT.reviews + ' untuk ' + esc(p.name) + '">' + TXT.reviews + '</button>' +
+          '<button class="hh2c6" role="tab" data-tab-index="2" aria-selected="false" aria-label="' + TXT.about + ' untuk ' + esc(p.name) + '">' + TXT.about + '</button>' +
+        '</div>' +
+        '<div class="body" id="tabbody"></div>' +
+      '</div>';
+
+    var tabs = app.querySelectorAll('[role="tab"]');
+    Array.prototype.forEach.call(tabs, function (t, i) {
+      t.addEventListener('click', function () { selectTab(p, i); });
+    });
+    selectTab(p, 0);
+  }
+
+  function selectTab(p, i) {
+    var tabs = app.querySelectorAll('[role="tab"]');
+    Array.prototype.forEach.call(tabs, function (t, k) { t.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    var body = document.getElementById('tabbody');
+    if (i === 0) { renderOverview(p, body); }
+    else if (i === 1) { renderReviews(p, body); }
+    else { body.innerHTML = '<div class="scroll"><div class="card">Tentang ' + esc(p.name) + '</div></div>'; }
+  }
+
+  function renderOverview(p, body) {
+    var hours = p.closed_now ? 'Tutup ⋅ Buka pukul 10.00' : 'Buka ⋅ Tutup pukul 22.00';
+    var previews = p.reviews.filter(function (r) { return r.teks; }).slice(0, 3);
+    body.innerHTML =
+      '<div class="scroll m6QErb DxyBCb kA9KIf dS8AEf">' +
+        '<button data-item-id="address" class="CsEnBe" aria-label="Alamat: ' + esc(p.address) + '"><div class="Io6YTe fontBodyMedium">' + esc(p.address) + '</div></button>' +
+        '<div class="fontBodyMedium"><span>' + hours + '</span></div>' +
+        '<div class="preview-reviews">' +
+          '<h2>Ulasan</h2>' +
+          previews.map(function (r) { return cardHTML(p, r, true); }).join('') +
+          '<button aria-label="' + TXT.moreReviews + '" class="HHrUdb" id="more-reviews">' + TXT.moreReviews + '</button>' +
+        '</div>' +
+      '</div>';
+    var more = document.getElementById('more-reviews');
+    if (more) more.addEventListener('click', function () { selectTab(p, 1); });
+    wireExpand(body);
+  }
+
+  // ───────────────────────────── kartu ulasan ─────────────────────────────
+  function cardHTML(p, r, isPreview) {
+    var variant = p.mock.variant || 'A';
+    var star = '<span class="' + (variant === 'B' ? 'zq9' : 'kvMYJc') + '" role="img" aria-label="' + r.rating + ' ' + TXT.stars + '"></span>';
+    var date = '<span class="' + (variant === 'B' ? 'zq8' : 'rsqaWe') + '">' + esc(r.tanggal_raw) + '</span>';
+    var textHtml = '';
+    if (r.teks) {
+      var truncated = r.teks.length > 200;
+      var shown = truncated ? r.teks.slice(0, 200) + '…' : r.teks;
+      if (variant === 'B') {
+        textHtml = '<div class="zq7"><span class="zq6" data-full="' + esc(r.teks) + '">' + esc(shown) + '</span>' +
+          (truncated ? '<button aria-label="Lihat lebih banyak ulasan ' + esc(r.nama) + '" class="zq5">' + TXT.more + '</button>' : '') + '</div>';
+      } else {
+        textHtml = '<div class="MyEned"><span class="wiI7pd" data-full="' + esc(r.teks) + '">' + esc(shown) + '</span>' +
+          (truncated ? '<button class="w8nwRe kyuRq" aria-label="Lihat lebih banyak ulasan ' + esc(r.nama) + '">' + TXT.more + '</button>' : '') + '</div>';
+      }
+    }
+    var reply = '';
+    if (r.balasan) {
+      reply = (variant === 'B')
+        ? '<div class="zq4"><span>' + TXT.owner + '</span><div class="zq3">' + esc(r.balasan) + '</div></div>'
+        : '<div class="CDe7pd"><div class="DZSIDd">' + TXT.owner + '</div><div class="wiI7pd">' + esc(r.balasan) + '</div></div>';
+    }
+    var nameHtml = (variant === 'B')
+      ? '<a href="https://www.google.com/maps/contrib/' + esc(r.id) + '?hl=id" aria-label="' + esc(r.nama) + '"><span class="zq2">' + esc(r.nama) + '</span></a>'
+      : '<button class="WEBjve" data-href="https://www.google.com/maps/contrib/' + esc(r.id) + '?hl=id"><div class="d4r55">' + esc(r.nama) + '</div><div class="RfnDt">Local Guide · 12 ulasan · 30 foto</div></button>';
+    var cls = (variant === 'B') ? 'zq1 card' : 'jftiEf fontBodyMedium card';
+    var labelAttr = (variant === 'B') ? ' aria-label="' + esc(r.nama) + '"' : '';
+    return '<div class="' + cls + '" data-review-id="' + esc(r.id) + '"' + labelAttr + '>' +
+             '<div class="WNxzHc">' + nameHtml + '</div>' +
+             '<div class="DU9Pgb">' + star + date + '</div>' +
+             textHtml + reply +
+             '<div><button class="gllhef" aria-label="Suka" data-review-id="' + esc(r.id) + '">Suka</button></div>' +
+           '</div>';
+  }
+
+  function wireExpand(root) {
+    var btns = root.querySelectorAll('button.w8nwRe, button.zq5');
+    Array.prototype.forEach.call(btns, function (b) {
+      if (b.__wired) return; b.__wired = true;
+      b.addEventListener('click', function (ev) {
+        var span = b.parentNode.querySelector('span[data-full]');
+        if (span) span.textContent = span.getAttribute('data-full');
+        b.parentNode.removeChild(b);
+        ev.stopPropagation();
+      });
+    });
+  }
+
+  // ───────────────────────────── tab ulasan + lazy loading ─────────────────────────────
+  function renderReviews(p, body) {
+    var mk = p.mock || {};
+    history.replaceState(null, '', location.pathname + (location.pathname.indexOf('!9m1!1b1') < 0 ? '!9m1!1b1' : '') + location.search);
+    body.innerHTML =
+      '<div class="scroll m6QErb DxyBCb kA9KIf dS8AEf XiKgde" id="scroller">' +
+        '<div class="jANrlb"><div class="fontDisplayLarge">' + String(p.rating).replace('.', ',') + '</div><div>' + fmtNum(p.total) + ' ' + TXT.reviewsWord + '</div></div>' +
+        '<button class="HQzyZ" data-value="Sort" aria-label="' + TXT.sort + ' ulasan" id="sortbtn">' + TXT.sort + '</button>' +
+        '<div id="list"></div>' +
+        '<div class="qjESne" role="progressbar" id="spinner">Memuat…</div>' +
+      '</div>';
+    var scroller = document.getElementById('scroller');
+    var list = document.getElementById('list');
+    var spinner = document.getElementById('spinner');
+
+    var S = { loaded: 0, order: [], loading: false, reqs: 0, jiggleArmed: false, lastTop: 0, mode: 0 };
+    function orderFor(mode) {
+      var arr = p.reviews.slice();
+      if (mode === 1) { /* Terbaru: urutan asli (indeks kecil = terbaru) */ }
+      else if (mode === 0) { // Paling relevan: acak deterministik
+        arr.sort(function (a, b) { return (a.rel - b.rel); });
+      } else if (mode === 2) { arr.sort(function (a, b) { return b.rating - a.rating || a.idx - b.idx; }); }
+      else if (mode === 3) { arr.sort(function (a, b) { return a.rating - b.rating || a.idx - b.idx; }); }
+      return arr;
+    }
+    S.order = orderFor(0);
+
+    function appendBatch(n) {
+      var html = '';
+      for (var k = 0; k < n && S.loaded < S.order.length; k++, S.loaded++) html += cardHTML(p, S.order[S.loaded], false);
+      list.insertAdjacentHTML('beforeend', html);
+      wireExpand(list);
+      if (mk.virtualize_keep) {
+        var cards = list.children;
+        while (cards.length > mk.virtualize_keep) list.removeChild(cards[0]);
+      }
+    }
+
+    function nearBottom() { return scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 300; }
+
+    function maybeLoad(trigger) {
+      if (S.loading || S.loaded >= S.order.length) return;
+      if (!nearBottom()) return;
+      if (mk.needs_wheel && trigger !== 'wheel') return;
+      if (mk.hard_stall_at != null && S.loaded >= mk.hard_stall_at) return;
+      if (mk.jiggle_at != null && S.loaded >= mk.jiggle_at && !S.jiggleArmed) return;
+      S.loading = true; spinner.style.display = 'block';
+      var lat = mk.latency || [250, 700];
+      setTimeout(function () {
+        appendBatch(10);
+        S.loading = false; spinner.style.display = 'none'; S.jiggleArmed = false; S.reqs++;
+        if (mk.captcha_after_reqs != null && S.reqs >= mk.captcha_after_reqs) {
+          location.href = '/sorry/index?continue=' + encodeURIComponent(location.href);
+        }
+      }, rand(lat[0], lat[1]));
+    }
+    scroller.addEventListener('scroll', function () {
+      if (scroller.scrollTop < S.lastTop - 150) S.jiggleArmed = true;
+      S.lastTop = scroller.scrollTop;
+      maybeLoad('scroll');
+    });
+    scroller.addEventListener('wheel', function (e) { if (e.deltaY < 0) S.jiggleArmed = true; else maybeLoad('wheel'); }, { passive: true });
+
+    // Menu urutan
+    document.getElementById('sortbtn').addEventListener('click', function () {
+      var old = document.querySelector('[role="menu"]'); if (old) { old.parentNode.removeChild(old); return; }
+      var menu = document.createElement('div'); menu.setAttribute('role', 'menu');
+      menu.innerHTML = TXT.menu.map(function (t, i) { return '<div role="menuitemradio" data-index="' + i + '">' + t + '</div>'; }).join('');
+      document.body.appendChild(menu);
+      Array.prototype.forEach.call(menu.querySelectorAll('[role="menuitemradio"]'), function (it) {
+        it.addEventListener('click', function () {
+          S.mode = parseInt(it.getAttribute('data-index'), 10);
+          S.order = orderFor(S.mode); S.loaded = 0; list.innerHTML = ''; scroller.scrollTop = 0; S.lastTop = 0;
+          menu.parentNode.removeChild(menu);
+          S.loading = true; spinner.style.display = 'block';
+          setTimeout(function () { appendBatch(10); S.loading = false; spinner.style.display = 'none'; }, rand(200, 500));
+        });
+      });
+    });
+
+    // Batch pertama
+    S.loading = true; spinner.style.display = 'block';
+    setTimeout(function () { appendBatch(10); S.loading = false; spinner.style.display = 'none'; }, rand(300, 700));
+  }
+})();
+</script>
+</body>
+</html>
