@@ -1,0 +1,2297 @@
+2026-11-22 06:32:02,542 [INFO] File input berhasil dibaca dengan encoding: latin-1
+2026-11-22 06:32:02,548 [INFO] Total 39 coffee shop akan di-scrape
+2026-11-22 06:32:02,551 [INFO] Ditemukan 0 tempat yang sudah pernah di-scrape (akan di-skip)
+2026-11-22 06:32:02,570 [INFO] Ditemukan 192 ulasan existing untuk cek duplikat (sep: ';')
+2026-11-22 06:32:02,570 [INFO] Menginisialisasi browser Chrome...
+2026-11-22 06:32:02,571 [INFO] ====== WebDriver manager ======
+2026-11-22 06:32:04,143 [INFO] Driver [C:\Users\Ryan Ghafran\.wdm\drivers\chromedriver\win64\157.0.8103.78\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-11-22 06:32:05,288 [INFO] [1/39] Memulai: Two Hands Full
+2026-11-22 06:32:05,288 [INFO]   Membuka: https://www.google.com/maps/search/Two+Hands+Full+Bandung
+2026-11-22 06:32:10,143 [INFO]   Menunggu 3.7 detik...
+2026-11-22 06:32:13,825 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:32:13,898 [INFO]   Nama resmi tempat: Two Hands Full Dago
+2026-11-22 06:32:14,000 [INFO]   Alamat ditemukan: Jl. Ir. H. Juanda No.113, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132
+2026-11-22 06:32:14,171 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:32:15,173 [INFO]   Menunggu 1.9 detik...
+2026-11-22 06:32:17,244 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:32:17,593 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:32:17,645 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:32:17,885 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:32:17,886 [INFO]   Menunggu 1.6 detik...
+2026-11-22 06:32:19,479 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:32:19,480 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:32:19,480 [INFO]   Menunggu 2.5 detik...
+2026-11-22 06:32:22,005 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:22,013 [INFO]   Menunggu 2.3 detik...
+2026-11-22 06:32:24,410 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:24,417 [INFO]   Menunggu 2.6 detik...
+2026-11-22 06:32:27,165 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:27,173 [INFO]   Menunggu 3.2 detik...
+2026-11-22 06:32:30,512 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:30,529 [INFO]   Menunggu 2.4 detik...
+2026-11-22 06:32:33,162 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:33,177 [INFO]   Menunggu 2.7 detik...
+2026-11-22 06:32:35,990 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:35,999 [INFO]   Menunggu 3.3 detik...
+2026-11-22 06:32:39,407 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:32:39,430 [INFO]   Menunggu 2.0 detik...
+2026-11-22 06:32:41,542 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:32:41,594 [INFO]   Menunggu 1.9 detik...
+2026-11-22 06:32:43,494 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:32:43,580 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:32:43,581 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Two Hands Full'
+2026-11-22 06:32:43,582 [INFO]   Selesai: Two Hands Full (0 ulasan baru)
+2026-11-22 06:32:43,583 [INFO]   Menunggu 5.9 detik...
+2026-11-22 06:32:49,450 [INFO] [2/39] Memulai: Two Cents
+2026-11-22 06:32:49,450 [INFO]   Membuka: https://www.google.com/maps/search/Two+Cents+Bandung
+2026-11-22 06:32:52,959 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:32:55,988 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:32:56,187 [INFO]   Nama resmi tempat: Two Cents
+2026-11-22 06:32:56,715 [INFO]   Alamat ditemukan: Jl. Lombok No.28a, Merdeka, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115
+2026-11-22 06:32:57,191 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:32:58,192 [INFO]   Menunggu 1.5 detik...
+2026-11-22 06:32:59,835 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:33:00,064 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:33:00,098 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:33:00,261 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:33:00,261 [INFO]   Menunggu 1.6 detik...
+2026-11-22 06:33:01,916 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:33:01,917 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:33:01,917 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:33:04,779 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:04,791 [INFO]   Menunggu 2.2 detik...
+2026-11-22 06:33:07,154 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:07,167 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:33:10,193 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:10,203 [INFO]   Menunggu 3.3 detik...
+2026-11-22 06:33:13,647 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:13,658 [INFO]   Menunggu 2.2 detik...
+2026-11-22 06:33:16,030 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:16,041 [INFO]   Menunggu 2.7 detik...
+2026-11-22 06:33:18,904 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:18,915 [INFO]   Menunggu 3.1 detik...
+2026-11-22 06:33:22,130 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:22,143 [INFO]   Menunggu 3.3 detik...
+2026-11-22 06:33:25,538 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:33:25,624 [INFO]   Menunggu 1.8 detik...
+2026-11-22 06:33:27,403 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:33:27,491 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:33:27,491 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Two Cents'
+2026-11-22 06:33:27,493 [INFO]   Selesai: Two Cents (0 ulasan baru)
+2026-11-22 06:33:27,494 [INFO]   Menunggu 5.5 detik...
+2026-11-22 06:33:33,043 [INFO] [3/39] Memulai: Sejiwa Coffee Progo
+2026-11-22 06:33:33,044 [INFO]   Membuka: https://www.google.com/maps/search/Sejiwa+Coffee+Progo+Bandung
+2026-11-22 06:33:33,502 [INFO]   Menunggu 3.5 detik...
+2026-11-22 06:33:37,050 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:33:37,096 [INFO]   Nama resmi tempat: Sejiwa
+2026-11-22 06:33:37,204 [INFO]   Alamat ditemukan: Jl. Progo No.15, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115
+2026-11-22 06:33:37,400 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:33:38,401 [INFO]   Menunggu 1.9 detik...
+2026-11-22 06:33:40,490 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:33:40,817 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:33:40,880 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:33:41,104 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:33:41,104 [INFO]   Menunggu 1.6 detik...
+2026-11-22 06:33:42,726 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:33:42,727 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:33:42,727 [INFO]   Menunggu 2.2 detik...
+2026-11-22 06:33:45,062 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:45,082 [INFO]   Menunggu 3.3 detik...
+2026-11-22 06:33:48,606 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:48,620 [INFO]   Menunggu 2.0 detik...
+2026-11-22 06:33:50,849 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:50,874 [INFO]   Menunggu 2.5 detik...
+2026-11-22 06:33:53,551 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:53,561 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:33:57,174 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:33:57,189 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:34:00,207 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:00,222 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:34:03,226 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:03,239 [INFO]   Menunggu 2.1 detik...
+2026-11-22 06:34:05,399 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:34:05,455 [INFO]   Menunggu 1.6 detik...
+2026-11-22 06:34:07,068 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:34:07,145 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:34:07,145 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Sejiwa Coffee Progo'
+2026-11-22 06:34:07,148 [INFO]   Selesai: Sejiwa Coffee Progo (0 ulasan baru)
+2026-11-22 06:34:07,148 [INFO]   Menunggu 5.2 detik...
+2026-11-22 06:34:12,391 [INFO] [4/39] Memulai: Kyomi Space
+2026-11-22 06:34:12,392 [INFO]   Membuka: https://www.google.com/maps/search/Kyomi+Space+Bandung
+2026-11-22 06:34:12,813 [INFO]   Menunggu 3.7 detik...
+2026-11-22 06:34:16,549 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:34:16,640 [INFO]   Nama resmi tempat: Kopi Kyomi
+2026-11-22 06:34:16,776 [INFO]   Alamat ditemukan: Jl. Ir. H. Juanda No.130, Dago, Kecamatan Coblong, Kota Bandung, Jawa Barat 40135
+2026-11-22 06:34:16,976 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:34:17,979 [INFO]   Menunggu 1.7 detik...
+2026-11-22 06:34:20,062 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:34:20,774 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:34:20,831 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:34:21,132 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:34:21,133 [INFO]   Menunggu 1.1 detik...
+2026-11-22 06:34:22,250 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:34:22,251 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:34:22,252 [INFO]   Menunggu 2.1 detik...
+2026-11-22 06:34:24,455 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:24,469 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:34:27,502 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:27,517 [INFO]   Menunggu 2.6 detik...
+2026-11-22 06:34:30,277 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:30,292 [INFO]   Menunggu 3.2 detik...
+2026-11-22 06:34:33,655 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:33,670 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:34:37,287 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:37,312 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:34:40,900 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:40,915 [INFO]   Menunggu 2.7 detik...
+2026-11-22 06:34:43,827 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:34:43,844 [INFO]   Menunggu 3.1 detik...
+2026-11-22 06:34:47,034 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:34:47,089 [INFO]   Menunggu 1.2 detik...
+2026-11-22 06:34:48,301 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:34:48,404 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:34:48,405 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Kyomi Space'
+2026-11-22 06:34:48,407 [INFO]   Selesai: Kyomi Space (0 ulasan baru)
+2026-11-22 06:34:48,408 [INFO]   Menunggu 4.4 detik...
+2026-11-22 06:34:52,795 [INFO] [5/39] Memulai: One Eighty Coffee and Music
+2026-11-22 06:34:52,796 [INFO]   Membuka: https://www.google.com/maps/search/One+Eighty+Coffee+and+Music+Bandung
+2026-11-22 06:34:53,219 [INFO]   Menunggu 3.9 detik...
+2026-11-22 06:34:57,140 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:34:57,230 [INFO]   Nama resmi tempat: One Eighty Coffee and Music
+2026-11-22 06:34:58,346 [INFO]   Alamat ditemukan: Jl. Ganesha No.3, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132
+2026-11-22 06:34:59,096 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:35:00,102 [INFO]   Menunggu 1.8 detik...
+2026-11-22 06:35:02,083 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:35:02,561 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:35:02,624 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:35:02,986 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:35:02,987 [INFO]   Menunggu 1.0 detik...
+2026-11-22 06:35:04,011 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:35:04,022 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:35:04,023 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:35:06,987 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:06,999 [INFO]   Menunggu 2.5 detik...
+2026-11-22 06:35:09,661 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:09,674 [INFO]   Menunggu 3.2 detik...
+2026-11-22 06:35:13,012 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:13,029 [INFO]   Menunggu 2.6 detik...
+2026-11-22 06:35:15,773 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:15,787 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:35:19,294 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:19,309 [INFO]   Menunggu 3.0 detik...
+2026-11-22 06:35:22,438 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:22,453 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:35:25,526 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:25,540 [INFO]   Menunggu 3.3 detik...
+2026-11-22 06:35:28,904 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:35:28,948 [INFO]   Menunggu 1.8 detik...
+2026-11-22 06:35:30,787 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:35:30,945 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:35:30,946 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'One Eighty Coffee and Music'
+2026-11-22 06:35:30,948 [INFO]   Selesai: One Eighty Coffee and Music (0 ulasan baru)
+2026-11-22 06:35:30,949 [INFO]   Menunggu 3.9 detik...
+2026-11-22 06:35:34,893 [INFO] [6/39] Memulai: Blue Doors
+2026-11-22 06:35:34,897 [INFO]   Membuka: https://www.google.com/maps/search/Blue+Doors+Bandung
+2026-11-22 06:35:35,264 [INFO]   Menunggu 3.9 detik...
+2026-11-22 06:35:40,722 [INFO]   Berhasil klik hasil pencarian pertama
+2026-11-22 06:35:40,723 [INFO]   Menunggu 3.8 detik...
+2026-11-22 06:35:44,562 [INFO]   Nama resmi tempat: Blue Doors
+2026-11-22 06:35:44,914 [INFO]   Alamat ditemukan: Jl. Alkateri No.2, Braga, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40111
+2026-11-22 06:35:45,514 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:35:46,557 [INFO]   Menunggu 1.8 detik...
+2026-11-22 06:35:48,612 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:35:48,891 [INFO]     DEBUG btn: role=None aria=Hapus text=''
+2026-11-22 06:35:48,949 [INFO]     DEBUG btn: role=None aria=Telusuri area ini text=''
+2026-11-22 06:35:49,163 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:35:49,217 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:35:49,348 [INFO]   Menunggu 1.1 detik...
+2026-11-22 06:35:50,492 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:35:50,493 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:35:50,494 [INFO]   Menunggu 2.3 detik...
+2026-11-22 06:35:52,950 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:52,964 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:35:55,999 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:56,025 [INFO]   Menunggu 2.3 detik...
+2026-11-22 06:35:58,519 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:35:58,530 [INFO]   Menunggu 3.0 detik...
+2026-11-22 06:36:01,683 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:01,696 [INFO]   Menunggu 2.7 detik...
+2026-11-22 06:36:04,511 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:04,528 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:36:07,486 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:07,502 [INFO]   Menunggu 2.6 detik...
+2026-11-22 06:36:10,293 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:10,303 [INFO]   Menunggu 3.5 detik...
+2026-11-22 06:36:13,880 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:36:13,916 [INFO]   Menunggu 1.6 detik...
+2026-11-22 06:36:15,550 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:36:15,608 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:36:15,609 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Blue Doors'
+2026-11-22 06:36:15,609 [INFO]   Selesai: Blue Doors (0 ulasan baru)
+2026-11-22 06:36:15,610 [INFO]   Menunggu 6.0 detik...
+2026-11-22 06:36:21,580 [INFO] [7/39] Memulai: Kurokoffee
+2026-11-22 06:36:21,581 [INFO]   Membuka: https://www.google.com/maps/search/Kurokoffee+Bandung
+2026-11-22 06:36:22,017 [INFO]   Menunggu 2.3 detik...
+2026-11-22 06:36:24,419 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:36:24,530 [INFO]   Nama resmi tempat: Kurokoffee
+2026-11-22 06:36:24,730 [INFO]   Alamat ditemukan: Jl. Ciumbuleuit No.130, Ciumbuleuit, Kec. Cidadap, Kota Bandung, Jawa Barat 40141
+2026-11-22 06:36:25,283 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:36:26,284 [INFO]   Menunggu 1.2 detik...
+2026-11-22 06:36:28,675 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:36:29,025 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:36:29,070 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:36:29,296 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:36:29,297 [INFO]   Menunggu 1.8 detik...
+2026-11-22 06:36:31,166 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:36:31,167 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:36:31,167 [INFO]   Menunggu 2.4 detik...
+2026-11-22 06:36:33,670 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:33,685 [INFO]   Menunggu 2.5 detik...
+2026-11-22 06:36:36,361 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:36,376 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:36:39,399 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:39,411 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:36:47,470 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:47,546 [INFO]   Menunggu 2.5 detik...
+2026-11-22 06:36:50,248 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:50,266 [INFO]   Menunggu 2.4 detik...
+2026-11-22 06:36:52,882 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:52,913 [INFO]   Menunggu 2.2 detik...
+2026-11-22 06:36:55,322 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:36:55,338 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:36:58,819 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:36:58,889 [INFO]   Menunggu 1.3 detik...
+2026-11-22 06:37:00,211 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:37:00,460 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:37:00,463 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Kurokoffee'
+2026-11-22 06:37:00,466 [INFO]   Selesai: Kurokoffee (0 ulasan baru)
+2026-11-22 06:37:00,468 [INFO]   Menunggu 4.6 detik...
+2026-11-22 06:37:05,077 [INFO] [8/39] Memulai: Cafe D'Pakar
+2026-11-22 06:37:05,077 [INFO]   Membuka: https://www.google.com/maps/search/Cafe+D'Pakar+Bandung
+2026-11-22 06:37:05,699 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:37:09,734 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:37:11,464 [INFO]   Nama resmi tempat: Cafe D'Pakar
+2026-11-22 06:37:12,314 [INFO]   Alamat ditemukan: Sekejolang Jl. Bukit Pakar Utara, Ciburial, Kec. Lembang, Kabupaten Bandung Barat, Jawa Barat 40198
+2026-11-22 06:37:12,807 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:37:13,825 [INFO]   Menunggu 1.1 detik...
+2026-11-22 06:37:15,112 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:37:15,461 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:37:15,522 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:37:15,780 [INFO]     DEBUG btn: role=None aria=Telusuri gambar Street View text=''
+2026-11-22 06:37:15,781 [INFO]   Menunggu 1.3 detik...
+2026-11-22 06:37:17,151 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:37:17,151 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:37:17,152 [INFO]   Menunggu 2.7 detik...
+2026-11-22 06:37:19,959 [INFO]   Scroll ke-1: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:19,969 [INFO]   Menunggu 3.3 detik...
+2026-11-22 06:37:23,415 [INFO]   Scroll ke-2: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:23,426 [INFO]   Menunggu 3.2 detik...
+2026-11-22 06:37:26,814 [INFO]   Scroll ke-3: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:26,830 [INFO]   Menunggu 2.1 detik...
+2026-11-22 06:37:29,099 [INFO]   Scroll ke-4: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:29,114 [INFO]   Menunggu 3.4 detik...
+2026-11-22 06:37:32,687 [INFO]   Scroll ke-5: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:32,702 [INFO]   Menunggu 2.0 detik...
+2026-11-22 06:37:34,902 [INFO]   Scroll ke-6: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:34,916 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:37:37,852 [INFO]   Scroll ke-7: 0 ulasan termuat (sel: div.jftiEf)
+2026-11-22 06:37:37,862 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:37:40,892 [INFO]   Semua ulasan sudah termuat (tidak ada tambahan baru)
+2026-11-22 06:37:40,942 [INFO]   Menunggu 1.9 detik...
+2026-11-22 06:37:42,874 [INFO]   Mengekstrak data ulasan...
+2026-11-22 06:37:42,972 [INFO]   Total kartu ditemukan untuk ekstrak: 0 (sel: div.jftiEf)
+2026-11-22 06:37:42,972 [INFO]   Total 0 ulasan baru berhasil diekstrak dari 'Cafe D'Pakar'
+2026-11-22 06:37:42,974 [INFO]   Selesai: Cafe D'Pakar (0 ulasan baru)
+2026-11-22 06:37:42,975 [INFO]   Menunggu 5.4 detik...
+2026-11-22 06:37:48,374 [INFO] [9/39] Memulai: Noah's Barn
+2026-11-22 06:37:48,375 [INFO]   Membuka: https://www.google.com/maps/search/Noah's+Barn+Bandung
+2026-11-22 06:37:49,387 [INFO]   Menunggu 4.0 detik...
+2026-11-22 06:37:55,028 [INFO]   Berhasil klik hasil pencarian pertama
+2026-11-22 06:37:55,028 [INFO]   Menunggu 3.7 detik...
+2026-11-22 06:37:58,760 [INFO]   Nama resmi tempat: Noah's Barn
+2026-11-22 06:37:58,830 [INFO]   Kategori tempat: '4,6
+(6.179)
+Kafe'
+2026-11-22 06:37:58,867 [INFO]   Alamat ditemukan: Jl. Dayang Sumbi No.2, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132
+2026-11-22 06:37:59,199 [INFO]   Modal popup login ditutup via tombol 'Tutup'
+2026-11-22 06:38:00,200 [INFO]   Menunggu 2.0 detik...
+2026-11-22 06:38:02,361 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka dengan semua selector!
+2026-11-22 06:38:02,625 [INFO]     DEBUG btn: role=None aria=Hapus text=''
+2026-11-22 06:38:02,677 [INFO]     DEBUG btn: role=None aria=Telusuri area ini text=''
+2026-11-22 06:38:02,844 [INFO]     DEBUG btn: role=None aria=Ciutkan panel samping text=''
+2026-11-22 06:38:02,892 [INFO]     DEBUG btn: role=None aria=Tutup text=''
+2026-11-22 06:38:03,031 [INFO]   Menunggu 1.1 detik...
+2026-11-22 06:38:04,141 [INFO]   Tombol sort tidak ditemukan, lanjut dengan urutan default
+2026-11-22 06:38:04,141 [INFO]   Memulai auto-scroll untuk memuat ulasan...
+2026-11-22 06:38:04,142 [INFO]   Menunggu 2.9 detik...
+2026-11-22 06:38:04,654 [INFO] Menutup browser...
+2026-11-22 06:38:04,670 [WARNING] Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /session/3fe548390321ff786271c213962f1896
+2026-11-22 06:38:08,809 [WARNING] Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError("HTTPConnection(host='localhost', port=50471): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it")': /session/3fe548390321ff786271c213962f1896
+2026-11-22 06:39:14,604 [INFO] File input berhasil dibaca dengan encoding: latin-1
+2026-11-22 06:39:14,615 [INFO] Total 39 coffee shop akan di-scrape
+2026-11-22 06:39:14,616 [INFO] Ditemukan 0 tempat yang sudah pernah di-scrape (akan di-skip)
+2026-11-22 06:39:14,633 [INFO] Ditemukan 192 ulasan existing untuk cek duplikat (sep: ';')
+2026-11-22 06:39:14,633 [INFO] Menginisialisasi browser Chrome...
+2026-11-22 06:39:14,634 [INFO] ====== WebDriver manager ======
+2026-11-22 06:39:16,152 [INFO] Driver [C:\Users\Ryan Ghafran\.wdm\drivers\chromedriver\win64\157.0.8103.78\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-11-22 06:39:17,310 [INFO] [1/39] Memulai: Two Hands Full
+2026-11-22 06:39:17,310 [INFO]   Membuka: https://www.google.com/maps/search/Two+Hands+Full+Bandung
+2026-11-22 06:39:18,998 [INFO]   Menunggu 2.7 detik...
+2026-11-22 06:39:21,755 [INFO]   Google Maps langsung membuka detail tempat (direct match)
+2026-11-22 06:39:21,888 [INFO]   Nama resmi tempat: Two Hands Full Dago
+2026-11-22 06:39:21,962 [INFO]   Alamat ditemukan: Jl. Ir. H. Juanda No.113, Lb. Siliwangi, Kecamatan Coblong, Kota Bandung, Jawa Barat 40132
+2026-11-22 06:39:23,069 [INFO]   Modal popup login ditutup via Escape
+2026-11-22 06:39:23,070 [INFO]   Menunggu 2.8 detik...
+2026-11-22 06:39:26,021 [INFO]   Klik tab ulasan via: button[aria-label*="ulasan"]
+2026-11-22 06:39:26,022 [INFO]   Menunggu 3.9 detik...
+2026-11-22 06:39:30,143 [WARNING]   PERINGATAN: Tab ulasan tidak berhasil dibuka!
+2026-11-22 06:39:30,145 [WARNING]   GAGAL: Two Hands Full -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,146 [ERROR]   Error pada 'Two Hands Full': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,147 [INFO] [2/39] Memulai: Two Cents
+2026-11-22 06:39:30,147 [INFO]   Membuka: https://www.google.com/maps/search/Two+Cents+Bandung
+2026-11-22 06:39:30,148 [WARNING]   GAGAL: Two Cents -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,149 [ERROR]   Error pada 'Two Cents': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,149 [INFO] [3/39] Memulai: Sejiwa Coffee Progo
+2026-11-22 06:39:30,149 [INFO]   Membuka: https://www.google.com/maps/search/Sejiwa+Coffee+Progo+Bandung
+2026-11-22 06:39:30,150 [WARNING]   GAGAL: Sejiwa Coffee Progo -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,151 [ERROR]   Error pada 'Sejiwa Coffee Progo': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,151 [INFO] [4/39] Memulai: Kyomi Space
+2026-11-22 06:39:30,151 [INFO]   Membuka: https://www.google.com/maps/search/Kyomi+Space+Bandung
+2026-11-22 06:39:30,153 [WARNING]   GAGAL: Kyomi Space -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,154 [ERROR]   Error pada 'Kyomi Space': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,154 [INFO] [5/39] Memulai: One Eighty Coffee and Music
+2026-11-22 06:39:30,154 [INFO]   Membuka: https://www.google.com/maps/search/One+Eighty+Coffee+and+Music+Bandung
+2026-11-22 06:39:30,157 [WARNING]   GAGAL: One Eighty Coffee and Music -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,157 [ERROR]   Error pada 'One Eighty Coffee and Music': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,158 [INFO] [6/39] Memulai: Blue Doors
+2026-11-22 06:39:30,158 [INFO]   Membuka: https://www.google.com/maps/search/Blue+Doors+Bandung
+2026-11-22 06:39:30,159 [WARNING]   GAGAL: Blue Doors -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,159 [ERROR]   Error pada 'Blue Doors': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,160 [INFO] [7/39] Memulai: Kurokoffee
+2026-11-22 06:39:30,160 [INFO]   Membuka: https://www.google.com/maps/search/Kurokoffee+Bandung
+2026-11-22 06:39:30,162 [WARNING]   GAGAL: Kurokoffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,162 [ERROR]   Error pada 'Kurokoffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,163 [INFO] [8/39] Memulai: Cafe D'Pakar
+2026-11-22 06:39:30,163 [INFO]   Membuka: https://www.google.com/maps/search/Cafe+D'Pakar+Bandung
+2026-11-22 06:39:30,164 [WARNING]   GAGAL: Cafe D'Pakar -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,165 [ERROR]   Error pada 'Cafe D'Pakar': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,165 [INFO] [9/39] Memulai: Noah's Barn
+2026-11-22 06:39:30,165 [INFO]   Membuka: https://www.google.com/maps/search/Noah's+Barn+Bandung
+2026-11-22 06:39:30,167 [WARNING]   GAGAL: Noah's Barn -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,167 [ERROR]   Error pada 'Noah's Barn': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,168 [INFO] [10/39] Memulai: Kopi Anjis
+2026-11-22 06:39:30,168 [INFO]   Membuka: https://www.google.com/maps/search/Kopi+Anjis+Bandung
+2026-11-22 06:39:30,171 [WARNING]   GAGAL: Kopi Anjis -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,171 [ERROR]   Error pada 'Kopi Anjis': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,171 [INFO] [11/39] Memulai: Wheels Coffee Roasters
+2026-11-22 06:39:30,172 [INFO]   Membuka: https://www.google.com/maps/search/Wheels+Coffee+Roasters+Bandung
+2026-11-22 06:39:30,173 [WARNING]   GAGAL: Wheels Coffee Roasters -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,173 [ERROR]   Error pada 'Wheels Coffee Roasters': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,174 [INFO] [12/39] Memulai: Kilogram
+2026-11-22 06:39:30,174 [INFO]   Membuka: https://www.google.com/maps/search/Kilogram+Bandung
+2026-11-22 06:39:30,176 [WARNING]   GAGAL: Kilogram -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,176 [ERROR]   Error pada 'Kilogram': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,176 [INFO] [13/39] Memulai: Jiwan Coffee & Things
+2026-11-22 06:39:30,176 [INFO]   Membuka: https://www.google.com/maps/search/Jiwan+Coffee+&+Things+Bandung
+2026-11-22 06:39:30,178 [WARNING]   GAGAL: Jiwan Coffee & Things -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,178 [ERROR]   Error pada 'Jiwan Coffee & Things': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,179 [INFO] [14/39] Memulai: Warung Kopi Purnama
+2026-11-22 06:39:30,179 [INFO]   Membuka: https://www.google.com/maps/search/Warung+Kopi+Purnama+Bandung
+2026-11-22 06:39:30,180 [WARNING]   GAGAL: Warung Kopi Purnama -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,180 [ERROR]   Error pada 'Warung Kopi Purnama': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,181 [INFO] [15/39] Memulai: Kopi Ireng
+2026-11-22 06:39:30,181 [INFO]   Membuka: https://www.google.com/maps/search/Kopi+Ireng+Bandung
+2026-11-22 06:39:30,182 [WARNING]   GAGAL: Kopi Ireng -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,182 [ERROR]   Error pada 'Kopi Ireng': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,183 [INFO] [16/39] Memulai: Orofi Cafe
+2026-11-22 06:39:30,183 [INFO]   Membuka: https://www.google.com/maps/search/Orofi+Cafe+Bandung
+2026-11-22 06:39:30,184 [WARNING]   GAGAL: Orofi Cafe -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,184 [ERROR]   Error pada 'Orofi Cafe': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,185 [INFO] [17/39] Memulai: Marka Coffee & Kitchen
+2026-11-22 06:39:30,185 [INFO]   Membuka: https://www.google.com/maps/search/Marka+Coffee+&+Kitchen+Bandung
+2026-11-22 06:39:30,186 [WARNING]   GAGAL: Marka Coffee & Kitchen -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,186 [ERROR]   Error pada 'Marka Coffee & Kitchen': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,187 [INFO] [18/39] Memulai: Sawo Coffee
+2026-11-22 06:39:30,187 [INFO]   Membuka: https://www.google.com/maps/search/Sawo+Coffee+Bandung
+2026-11-22 06:39:30,189 [WARNING]   GAGAL: Sawo Coffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,189 [ERROR]   Error pada 'Sawo Coffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,190 [INFO] [19/39] Memulai: de.u Coffee
+2026-11-22 06:39:30,190 [INFO]   Membuka: https://www.google.com/maps/search/de.u+Coffee+Bandung
+2026-11-22 06:39:30,192 [WARNING]   GAGAL: de.u Coffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,193 [ERROR]   Error pada 'de.u Coffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,193 [INFO] [20/39] Memulai: Temu Kamu
+2026-11-22 06:39:30,193 [INFO]   Membuka: https://www.google.com/maps/search/Temu+Kamu+Bandung
+2026-11-22 06:39:30,199 [WARNING]   GAGAL: Temu Kamu -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,200 [ERROR]   Error pada 'Temu Kamu': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,200 [INFO] [21/39] Memulai: Noah's Barn Coffeenery
+2026-11-22 06:39:30,201 [INFO]   Membuka: https://www.google.com/maps/search/Noah's+Barn+Coffeenery+Bandung
+2026-11-22 06:39:30,202 [WARNING]   GAGAL: Noah's Barn Coffeenery -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,202 [ERROR]   Error pada 'Noah's Barn Coffeenery': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,203 [INFO] [22/39] Memulai: Kopi Mandja
+2026-11-22 06:39:30,203 [INFO]   Membuka: https://www.google.com/maps/search/Kopi+Mandja+Bandung
+2026-11-22 06:39:30,206 [WARNING]   GAGAL: Kopi Mandja -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,207 [ERROR]   Error pada 'Kopi Mandja': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,207 [INFO] [23/39] Memulai: Kanoko Coffee
+2026-11-22 06:39:30,207 [INFO]   Membuka: https://www.google.com/maps/search/Kanoko+Coffee+Bandung
+2026-11-22 06:39:30,216 [WARNING]   GAGAL: Kanoko Coffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,216 [ERROR]   Error pada 'Kanoko Coffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,217 [INFO] [24/39] Memulai: Kumari
+2026-11-22 06:39:30,218 [INFO]   Membuka: https://www.google.com/maps/search/Kumari+Bandung
+2026-11-22 06:39:30,227 [WARNING]   GAGAL: Kumari -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,228 [ERROR]   Error pada 'Kumari': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,229 [INFO] [25/39] Memulai: Kopi Selasar Sunaryo
+2026-11-22 06:39:30,229 [INFO]   Membuka: https://www.google.com/maps/search/Kopi+Selasar+Sunaryo+Bandung
+2026-11-22 06:39:30,230 [WARNING]   GAGAL: Kopi Selasar Sunaryo -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,230 [ERROR]   Error pada 'Kopi Selasar Sunaryo': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,231 [INFO] [26/39] Memulai: Jack Runner Roastery
+2026-11-22 06:39:30,231 [INFO]   Membuka: https://www.google.com/maps/search/Jack+Runner+Roastery+Bandung
+2026-11-22 06:39:30,233 [WARNING]   GAGAL: Jack Runner Roastery -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,233 [ERROR]   Error pada 'Jack Runner Roastery': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,234 [INFO] [27/39] Memulai: yumaju coffee
+2026-11-22 06:39:30,234 [INFO]   Membuka: https://www.google.com/maps/search/yumaju+coffee+Bandung
+2026-11-22 06:39:30,236 [WARNING]   GAGAL: yumaju coffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,237 [ERROR]   Error pada 'yumaju coffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,238 [INFO] [28/39] Memulai: Nimna Bookcafé
+2026-11-22 06:39:30,239 [INFO]   Membuka: https://www.google.com/maps/search/Nimna+Bookcafé+Bandung
+2026-11-22 06:39:30,241 [WARNING]   GAGAL: Nimna Bookcafé -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,242 [ERROR]   Error pada 'Nimna Bookcafé': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,242 [INFO] [29/39] Memulai: 150 Coffee Garden
+2026-11-22 06:39:30,242 [INFO]   Membuka: https://www.google.com/maps/search/150+Coffee+Garden+Bandung
+2026-11-22 06:39:30,245 [WARNING]   GAGAL: 150 Coffee Garden -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,245 [ERROR]   Error pada '150 Coffee Garden': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,246 [INFO] [30/39] Memulai: Kisah Manis
+2026-11-22 06:39:30,246 [INFO]   Membuka: https://www.google.com/maps/search/Kisah+Manis+Bandung
+2026-11-22 06:39:30,248 [WARNING]   GAGAL: Kisah Manis -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,249 [ERROR]   Error pada 'Kisah Manis': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,250 [INFO] [31/39] Memulai: Goldstar 360
+2026-11-22 06:39:30,250 [INFO]   Membuka: https://www.google.com/maps/search/Goldstar+360+Bandung
+2026-11-22 06:39:30,252 [WARNING]   GAGAL: Goldstar 360 -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,253 [ERROR]   Error pada 'Goldstar 360': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,253 [INFO] [32/39] Memulai: Teduh Coffee
+2026-11-22 06:39:30,253 [INFO]   Membuka: https://www.google.com/maps/search/Teduh+Coffee+Bandung
+2026-11-22 06:39:30,255 [WARNING]   GAGAL: Teduh Coffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,255 [ERROR]   Error pada 'Teduh Coffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,256 [INFO] [33/39] Memulai: Jati Kopi
+2026-11-22 06:39:30,256 [INFO]   Membuka: https://www.google.com/maps/search/Jati+Kopi+Bandung
+2026-11-22 06:39:30,258 [WARNING]   GAGAL: Jati Kopi -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,258 [ERROR]   Error pada 'Jati Kopi': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,259 [INFO] [34/39] Memulai: Sejiwa Coffee Kiputih
+2026-11-22 06:39:30,259 [INFO]   Membuka: https://www.google.com/maps/search/Sejiwa+Coffee+Kiputih+Bandung
+2026-11-22 06:39:30,261 [WARNING]   GAGAL: Sejiwa Coffee Kiputih -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,261 [ERROR]   Error pada 'Sejiwa Coffee Kiputih': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,262 [INFO] [35/39] Memulai: Coffee Shop The Kamasan
+2026-11-22 06:39:30,262 [INFO]   Membuka: https://www.google.com/maps/search/Coffee+Shop+The+Kamasan+Bandung
+2026-11-22 06:39:30,263 [WARNING]   GAGAL: Coffee Shop The Kamasan -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,263 [ERROR]   Error pada 'Coffee Shop The Kamasan': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,264 [INFO] [36/39] Memulai: Hafa Warehouse
+2026-11-22 06:39:30,264 [INFO]   Membuka: https://www.google.com/maps/search/Hafa+Warehouse+Bandung
+2026-11-22 06:39:30,266 [WARNING]   GAGAL: Hafa Warehouse -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,266 [ERROR]   Error pada 'Hafa Warehouse': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,267 [INFO] [37/39] Memulai: Dago Bakery
+2026-11-22 06:39:30,267 [INFO]   Membuka: https://www.google.com/maps/search/Dago+Bakery+Bandung
+2026-11-22 06:39:30,268 [WARNING]   GAGAL: Dago Bakery -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,269 [ERROR]   Error pada 'Dago Bakery': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,269 [INFO] [38/39] Memulai: foresta coffee
+2026-11-22 06:39:30,269 [INFO]   Membuka: https://www.google.com/maps/search/foresta+coffee+Bandung
+2026-11-22 06:39:30,271 [WARNING]   GAGAL: foresta coffee -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,272 [ERROR]   Error pada 'foresta coffee': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,272 [INFO] [39/39] Memulai: Fuels Coffee Sudirman.
+2026-11-22 06:39:30,273 [INFO]   Membuka: https://www.google.com/maps/search/Fuels+Coffee+Sudirman.+Bandung
+2026-11-22 06:39:30,274 [WARNING]   GAGAL: Fuels Coffee Sudirman. -- Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,275 [ERROR]   Error pada 'Fuels Coffee Sudirman.': Message: invalid session id; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	(No symbol) [0x7ff676c5d655]
+	(No symbol) [0x7ff676b54790]
+	(No symbol) [0x7ff676f5a76d]
+	(No symbol) [0x7ff6769dbef3]
+	(No symbol) [0x7ff6769edf92]
+	(No symbol) [0x7ff6769ebfa3]
+	(No symbol) [0x7ff6769ebb0c]
+	(No symbol) [0x7ff6769ad97b]
+	(No symbol) [0x7ff6769adb52]
+	(No symbol) [0x7ff6769add65]
+	(No symbol) [0x7ff6770f7041]
+	(No symbol) [0x7ff677115c76]
+	(No symbol) [0x7ff67710c340]
+	(No symbol) [0x7ff676d8c9be]
+	(No symbol) [0x7ff676b62fa5]
+	(No symbol) [0x7ff6771b5463]
+	(No symbol) [0x7ff6769ac9e4]
+	(No symbol) [0x7ff6771624ff]
+	(No symbol) [0x7ff86a36dda7]
+	(No symbol) [0x7ff86b5f9c5c]
+
+2026-11-22 06:39:30,275 [INFO] Menutup browser...
+2026-11-24 05:31:13,652 [INFO] Semua proses selesai.
