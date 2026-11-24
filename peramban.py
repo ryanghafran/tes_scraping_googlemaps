@@ -17,8 +17,10 @@ import os
 import random
 import re
 import shutil
+import signal
 import subprocess
 import sys
+import tempfile
 import time
 
 from selenium import webdriver
@@ -41,6 +43,10 @@ log = logging.getLogger(__name__)
 
 class DiblokirGoogleError(Exception):
     """Google menampilkan CAPTCHA / 'lalu lintas tidak biasa' dan tidak terselesaikan."""
+
+
+class ChromeTidakBisaDibukaError(RuntimeError):
+    """Chrome gagal dibuka dengan profil scraper (biasanya profil masih dipakai proses Chrome lain)."""
 
 
 class LoginDiperlukanError(Exception):
@@ -132,6 +138,77 @@ return '';
 """
 
 
+# ─── Proses Chrome yang memakai profil scraper ────────────────────────────────
+# "session not created: Chrome instance exited" hampir selalu berarti folder profil MASIH DIPAKAI proses Chrome
+# lain (jendela login yang belum benar-benar tertutup, atau sisa Chrome dari jalan sebelumnya yang crash):
+# Chrome kedua menyerahkan permintaannya ke yang pertama lalu langsung keluar.
+
+_TANDA_PROFIL_TERKUNCI = ("user data directory", "devtoolsactiveport", "chrome failed to start",
+                          "chrome instance exited", "crashed")
+
+
+def tanda_profil_terkunci(exc: BaseException) -> bool:
+    """True jika pesan error saat membuka Chrome khas profil yang sedang dipakai proses Chrome lain."""
+    pesan = str(exc).lower()
+    return any(k in pesan for k in _TANDA_PROFIL_TERKUNCI)
+
+
+def _tanpa_jendela() -> int:
+    return getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
+
+
+def proses_chrome_profil(profil: str) -> list:
+    """
+    [(pid, keterangan)] proses Chrome yang dijalankan dengan --user-data-dir=<profil>.
+    Hanya Chrome milik scraper yang cocok; Chrome biasa Anda (profil lain) tidak tersentuh.
+    Mengembalikan [] bila tidak ada ATAU tidak bisa diperiksa.
+    """
+    try:
+        if os.name == "nt":
+            skrip = ("Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'chrome.exe' -and $_.CommandLine -and "
+                     "$_.CommandLine.IndexOf($env:SCRAPER_PROFIL, [StringComparison]::OrdinalIgnoreCase) -ge 0 } | "
+                     "ForEach-Object { $_.ProcessId }")
+            hasil = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", skrip],
+                                   capture_output=True, text=True, timeout=30,
+                                   env=dict(os.environ, SCRAPER_PROFIL=profil), creationflags=_tanpa_jendela())
+            return [(int(x), "chrome.exe") for x in hasil.stdout.split() if x.isdigit()]
+        hasil = subprocess.run(["ps", "-eo", "pid,args"], capture_output=True, text=True, timeout=15)
+        diri, out = {os.getpid(), os.getppid()}, []
+        for baris in hasil.stdout.splitlines()[1:]:
+            bagian = baris.strip().split(None, 1)
+            if len(bagian) == 2 and bagian[0].isdigit() and int(bagian[0]) not in diri:
+                if profil in bagian[1] and "chrom" in bagian[1].lower():
+                    out.append((int(bagian[0]), bagian[1][:60]))
+        return out
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return []
+
+
+def matikan_proses_profil(profil: str) -> int:
+    """Menghentikan paksa proses Chrome yang memakai profil scraper. Returns jumlah proses yang dicoba dimatikan."""
+    pids = [p for p, _ in proses_chrome_profil(profil)]
+    for pid in pids:
+        try:
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True, timeout=20,
+                               creationflags=_tanpa_jendela())
+            else:
+                os.kill(pid, signal.SIGKILL)
+        except (OSError, subprocess.SubprocessError):
+            pass
+    if pids:
+        time.sleep(2)
+    return len(pids)
+
+
+def _daftar_pid(pids: list) -> str:
+    return ", ".join(str(p) for p, _ in pids[:8]) + (" ..." if len(pids) > 8 else "")
+
+
+def _terminal_interaktif() -> bool:
+    return sys.stdin is not None and sys.stdin.isatty()
+
+
 # ─── Kelas Peramban ───────────────────────────────────────────────────────────
 
 class Peramban:
@@ -142,6 +219,7 @@ class Peramban:
         self.driver = None
         self.faktor_lambat = 1.0          # naik otomatis saat ada tanda-tanda dibatasi Google
         self._jumlah_debug = 0
+        self._path_driver = None          # hasil webdriver-manager (di-cache; '' = pakai Selenium Manager)
 
     # -- siklus hidup ---------------------------------------------------------
     def _opsi(self, profil: str) -> Options:
@@ -151,6 +229,7 @@ class Peramban:
         if cfg.CHROME_BINARY:
             o.binary_location = cfg.CHROME_BINARY
         o.add_argument(f"--user-data-dir={profil}")
+        o.add_argument("--profile-directory=Default")     # profil yang sama dengan jendela login; tanpa profile picker
         o.add_argument("--window-size=1366,900")
         o.add_argument("--lang=id-ID")
         o.add_argument("--disable-blink-features=AutomationControlled")
@@ -174,43 +253,80 @@ class Peramban:
         # tidak konsisten dengan fitur browser dan justru mudah dikenali sebagai bot.
         return o
 
-    def _service(self):
+    def _service(self, log_driver: str | None = None):
+        """Service chromedriver. log_driver: file log verbose chromedriver (untuk diagnosis kegagalan membuka Chrome)."""
+        kw = dict(log_output=log_driver, service_args=["--verbose"]) if log_driver else {}
         if cfg.CHROMEDRIVER_PATH:
-            return Service(cfg.CHROMEDRIVER_PATH)
-        try:
-            from webdriver_manager.chrome import ChromeDriverManager
-            return Service(ChromeDriverManager().install())
-        except Exception as e:                   # tanpa internet / paket tak ada -> Selenium Manager
-            log.warning(f"webdriver-manager gagal ({ringkas_error(e, 120)}); memakai Selenium Manager bawaan")
-            return None
+            return Service(cfg.CHROMEDRIVER_PATH, **kw)
+        if self._path_driver is None:
+            try:
+                from webdriver_manager.chrome import ChromeDriverManager
+                self._path_driver = ChromeDriverManager().install()
+            except Exception as e:               # tanpa internet / paket tak ada -> Selenium Manager bawaan
+                log.warning(f"webdriver-manager gagal ({ringkas_error(e, 120)}); memakai Selenium Manager bawaan")
+                self._path_driver = ""
+        return Service(self._path_driver, **kw) if self._path_driver else Service(**kw)
 
-    def mulai(self):
+    def _mulai_sekali(self, profil: str, log_driver: str | None = None):
+        self.driver = webdriver.Chrome(service=self._service(log_driver), options=self._opsi(profil))
+
+    @staticmethod
+    def _izin_matikan(pids: list) -> bool:
+        """Menawarkan mematikan proses Chrome sisa (hanya yang memakai profil scraper)."""
+        print(f"\n  Masih ada {len(pids)} proses Chrome yang memakai profil scraper (PID {_daftar_pid(pids)}).")
+        print("  Biasanya ini jendela Chrome dari '--login' yang belum benar-benar tertutup, atau sisa Chrome dari jalan sebelumnya.")
+        if not _terminal_interaktif():
+            return False
+        try:
+            jawab = input("  Matikan paksa proses tersebut? (hanya Chrome milik scraper; Chrome biasa Anda aman) [y/N] ")
+        except EOFError:
+            return False
+        return jawab.strip().lower() in ("y", "ya")
+
+    @staticmethod
+    def _pesan_profil_terkunci(e: BaseException, pids: list) -> str:
+        baris = ["Chrome tidak bisa dibuka dengan profil scraper (folder .chrome_profile).",
+                 f"Detail: {ringkas_error(e, 200)}",
+                 "Penyebab paling umum: profil masih dipakai proses Chrome lain (jendela login yang belum benar-benar "
+                 "tertutup, atau sisa Chrome dari jalan sebelumnya)."]
+        if pids:
+            baris.append(f"Proses Chrome yang masih memakai profil: PID {_daftar_pid(pids)}.")
+        baris += ["Cara memperbaiki: (1) tutup semua jendela Chrome yang dibuka lewat --login; (2) di Task Manager akhiri "
+                  "proses 'Google Chrome' yang tersisa (atau restart komputer); (3) jalankan ulang.",
+                  "Masih gagal? Jalankan:  python scraper.py --diagnosa  lalu kirim hasilnya beserta "
+                  "debug/chromedriver_diagnosa.log."]
+        return "\n".join(baris)
+
+    def mulai(self, matikan_sisa: bool = False):
+        """
+        Membuka Chrome dengan profil scraper. Jika profil terkunci proses Chrome lain: menunggu & mencoba lagi,
+        menawarkan mematikan proses sisa itu, lalu memberi error yang jelas. SENGAJA tidak pindah ke profil
+        sementara karena sesi login Google tersimpan di profil ini.
+        matikan_sisa=True: proses sisa langsung dimatikan tanpa bertanya (dipakai saat memulihkan sesi yang mati).
+        """
         profil = os.path.abspath(cfg.DIR_PROFIL)
         os.makedirs(profil, exist_ok=True)
-        servis = self._service()
+        if matikan_sisa:
+            n = matikan_proses_profil(profil)
+            if n:
+                log.warning(f"{n} proses Chrome sisa yang memakai profil scraper dimatikan")
         maks = 3
         for percobaan in range(1, maks + 1):
             try:
-                opsi = self._opsi(profil)
-                self.driver = (webdriver.Chrome(service=servis, options=opsi) if servis
-                               else webdriver.Chrome(options=opsi))
+                self._mulai_sekali(profil)
                 break
             except (SessionNotCreatedException, WebDriverException) as e:
-                pesan = str(e).lower()
-                terkunci = any(k in pesan for k in
-                               ("user data directory", "devtoolsactiveport", "chrome failed to start", "crashed"))
-                if not terkunci:
+                if not tanda_profil_terkunci(e):
                     raise
-                if percobaan < maks:
-                    log.warning("Profil Chrome scraper masih terkunci (sisa proses Chrome sebelumnya?). "
-                                f"Menunggu lalu mencoba lagi ({percobaan}/{maks - 1})...")
-                    time.sleep(5)
+                pids = proses_chrome_profil(profil)
+                if percobaan == maks:
+                    raise ChromeTidakBisaDibukaError(self._pesan_profil_terkunci(e, pids)) from e
+                if pids and (matikan_sisa or self._izin_matikan(pids)):
+                    matikan_proses_profil(profil)
                     continue
-                # SENGAJA tidak memakai profil sementara: sesi login Google tersimpan di profil ini.
-                raise RuntimeError(
-                    "Profil Chrome scraper sedang dipakai Chrome lain. Tutup semua jendela Chrome yang dibuka lewat "
-                    "'--login' dan matikan sisa proses chrome/chromedriver (Task Manager), lalu jalankan ulang. "
-                    f"Detail: {ringkas_error(e, 160)}") from e
+                log.warning("Chrome tidak bisa dibuka dengan profil scraper (kemungkinan profil masih dipakai Chrome "
+                            f"lain). Menunggu 8 detik lalu mencoba lagi ({percobaan}/{maks - 1})...")
+                time.sleep(8)
         self.driver.set_page_load_timeout(cfg.TIMEOUT_HALAMAN)
         self._anti_deteksi()
         log.info(f"Chrome siap (versi {self.driver.capabilities.get('browserVersion', '?')}, "
@@ -242,10 +358,10 @@ class Peramban:
                 pass
 
     def ulang(self):
-        """Tutup lalu buka Chrome baru (dipakai saat sesi mati)."""
+        """Tutup lalu buka Chrome baru (dipakai saat sesi mati). Sisa proses Chrome sesi sebelumnya dimatikan."""
         self.tutup()
         time.sleep(2)
-        self.mulai()
+        self.mulai(matikan_sisa=True)
 
     # -- bantu ---------------------------------------------------------------
     def js(self, script: str, *args):
@@ -398,9 +514,9 @@ def cari_chrome() -> str | None:
 
 def login_manual() -> bool:
     """
-    Membuka Chrome biasa dengan profil scraper agar pengguna bisa login ke Google, lalu menunggu
-    sampai Chrome ditutup (profil terkunci selama Chrome masih hidup).
-    Returns True jika Chrome berhasil dibuka dan ditutup kembali.
+    Membuka Chrome biasa dengan profil scraper agar pengguna bisa login ke Google, lalu menunggu sampai
+    Chrome benar-benar ditutup (profil terkunci selama ada proses Chrome yang memakainya).
+    Returns True jika Chrome berhasil dibuka dan profilnya sudah dilepas.
     """
     chrome = cari_chrome()
     if not chrome:
@@ -409,10 +525,18 @@ def login_manual() -> bool:
         return False
     profil = os.path.abspath(cfg.DIR_PROFIL)
     os.makedirs(profil, exist_ok=True)
+    sisa = proses_chrome_profil(profil)
+    if sisa:                                      # sisa Chrome lama akan 'menelan' jendela login ini dan langsung keluar
+        if Peramban._izin_matikan(sisa):
+            matikan_proses_profil(profil)
+        else:
+            print("  Tutup dulu Chrome tersebut (atau akhiri di Task Manager), lalu jalankan --login lagi.")
+            return False
     print(PETUNJUK_LOGIN)
     proses = subprocess.Popen([
-        chrome, f"--user-data-dir={profil}", "--no-first-run", "--no-default-browser-check",
-        "--disable-background-mode", f"--lang={cfg.BAHASA}-ID" if cfg.BAHASA == "id" else f"--lang={cfg.BAHASA}",
+        chrome, f"--user-data-dir={profil}", "--profile-directory=Default", "--no-first-run",
+        "--no-default-browser-check", "--disable-background-mode",
+        f"--lang={cfg.BAHASA}-ID" if cfg.BAHASA == "id" else f"--lang={cfg.BAHASA}",
         URL_LOGIN.format(bahasa=cfg.BAHASA)])
     try:
         input("  Tekan ENTER di sini setelah selesai login dan jendela Chrome ditutup... ")
@@ -422,7 +546,75 @@ def login_manual() -> bool:
         if proses.poll() is not None:
             break
         time.sleep(1)
+    # Proses yang kita luncurkan bisa saja sudah selesai sementara Chrome-nya (anak proses) masih hidup:
+    # yang menentukan adalah apakah masih ada proses Chrome yang memakai profil.
+    for _ in range(30):
+        if not proses_chrome_profil(profil):
+            return True
+        time.sleep(2)
+    sisa = proses_chrome_profil(profil)
+    print(f"\n  Masih ada {len(sisa)} proses Chrome yang memakai profil scraper (PID {_daftar_pid(sisa)}).")
+    if Peramban._izin_matikan(sisa):
+        matikan_proses_profil(profil)
     else:
-        print("  Chrome sepertinya belum tertutup penuh. Tutup jendelanya (atau matikan chrome.exe di Task "
-              "Manager) sebelum menjalankan scraper, kalau tidak profil akan terkunci.")
+        print("  Tutup jendelanya atau akhiri proses 'Google Chrome' di Task Manager sebelum menjalankan scraper; "
+              "kalau tidak profil akan terkunci.")
     return True
+
+
+# ─── Diagnosa Chrome ──────────────────────────────────────────────────────────
+
+def jalankan_diagnosa() -> int:
+    """
+    Mengumpulkan fakta saat Chrome tidak bisa dibuka (mis. 'session not created: Chrome instance exited'):
+    lokasi Chrome, status profil, proses yang memakai profil, dan uji membuka Chrome dengan profil scraper
+    lalu dengan profil sementara, disertai log verbose chromedriver di debug/chromedriver_diagnosa.log.
+    """
+    profil = os.path.abspath(cfg.DIR_PROFIL)
+    os.makedirs(cfg.DIR_DEBUG, exist_ok=True)
+    file_log = os.path.join(cfg.DIR_DEBUG, "chromedriver_diagnosa.log")
+    open(file_log, "w", encoding="utf-8").close()
+    print("=" * 66 + "\n  DIAGNOSA CHROME\n" + "=" * 66)
+    print(f"- Sistem operasi   : {sys.platform}, Python {sys.version.split()[0]}")
+    print(f"- Chrome           : {cari_chrome() or 'TIDAK DITEMUKAN (atur CHROME_BINARY)'}")
+    print(f"- CHROMEDRIVER_PATH: {cfg.CHROMEDRIVER_PATH or '(tidak diatur; otomatis)'}")
+    print(f"- Folder profil    : {profil} ({'ada' if os.path.isdir(profil) else 'belum ada'})")
+    if os.name == "nt":
+        print(f"- lockfile profil  : {'ADA (profil sedang dipakai Chrome)' if os.path.exists(os.path.join(profil, 'lockfile')) else 'tidak ada'}")
+    pids = proses_chrome_profil(profil)
+    print(f"- Proses Chrome yang memakai profil: {('PID ' + _daftar_pid(pids)) if pids else 'tidak ada / tidak bisa diperiksa'}")
+
+    def coba(nama: str, folder: str):
+        pb = Peramban()
+        try:
+            pb._mulai_sekali(folder, log_driver=file_log)
+            kap = pb.driver.capabilities
+            print(f"- Uji buka Chrome dengan {nama}: BERHASIL (Chrome {kap.get('browserVersion', '?')}, "
+                  f"chromedriver {str(kap.get('chrome', {}).get('chromedriverVersion', '?')).split()[0]})")
+            return True
+        except Exception as e:                    # noqa: BLE001
+            print(f"- Uji buka Chrome dengan {nama}: GAGAL -> {ringkas_error(e, 220)}")
+            return False
+        finally:
+            pb.tutup()
+
+    sementara = tempfile.mkdtemp(prefix="scraper_diagnosa_")
+    try:
+        if coba("profil scraper", profil):
+            kesimpulan = "Chrome bisa dibuka dengan profil scraper. Jalankan scraper seperti biasa."
+            kode = 0
+        elif coba("profil SEMENTARA (kosong)", sementara):
+            kesimpulan = ("Chrome bisa dibuka dengan profil kosong tetapi GAGAL dengan profil scraper: profil terkunci "
+                          "proses Chrome lain atau rusak. Tutup semua Chrome milik scraper / akhiri chrome.exe di Task "
+                          "Manager lalu coba lagi. Bila tetap gagal, ganti nama folder .chrome_profile lalu jalankan "
+                          "--login lagi (login perlu diulang).")
+            kode = 1
+        else:
+            kesimpulan = ("Chrome GAGAL dibuka bahkan dengan profil kosong: masalah ada pada Chrome/chromedriver itu "
+                          "sendiri (versi tidak cocok, antivirus, atau izin). Kirim keluaran ini dan "
+                          "debug/chromedriver_diagnosa.log.")
+            kode = 1
+    finally:
+        shutil.rmtree(sementara, ignore_errors=True)
+    print("-" * 66 + f"\nKESIMPULAN: {kesimpulan}\nLog chromedriver: {file_log}\n" + "=" * 66)
+    return kode

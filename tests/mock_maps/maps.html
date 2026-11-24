@@ -36,10 +36,10 @@
   var qs = new URLSearchParams(location.search);
   var hl = qs.get('hl') || 'id';
   var TXT = hl === 'en'
-    ? { overview: 'Overview', reviews: 'Reviews', about: 'About', permClosed: 'Permanently closed', tempClosed: 'Temporarily closed',
+    ? { overview: 'Overview', menuTab: 'Menu', reviews: 'Reviews', about: 'About', permClosed: 'Permanently closed', tempClosed: 'Temporarily closed',
         stars: 'stars', sort: 'Sort', menu: ['Most relevant', 'Newest', 'Highest rating', 'Lowest rating'], more: 'More', moreReviews: 'More reviews',
         owner: 'Response from the owner', reviewsWord: 'reviews', noResult: "Google Maps can't find" }
-    : { overview: 'Ikhtisar', reviews: 'Ulasan', about: 'Tentang', permClosed: 'Tutup permanen', tempClosed: 'Tutup sementara',
+    : { overview: 'Ringkasan', menuTab: 'Menu', reviews: 'Ulasan', about: 'Tentang', permClosed: 'Tutup permanen', tempClosed: 'Tutup sementara',
         stars: 'bintang', sort: 'Urutkan', menu: ['Paling relevan', 'Terbaru', 'Peringkat tertinggi', 'Peringkat terendah'], more: 'Selengkapnya', moreReviews: 'Ulasan lainnya',
         owner: 'Tanggapan dari pemilik', reviewsWord: 'ulasan', noResult: 'Google Maps tidak dapat menemukan' };
 
@@ -141,27 +141,36 @@
           statusHtml +
         '</div>' +
         '<div class="tabs RWPxGd">' +
-          '<button class="hh2c6" role="tab" data-tab-index="0" aria-selected="true" aria-label="' + TXT.overview + ' untuk ' + esc(p.name) + '">' + TXT.overview + '</button>' +
-          '<button class="hh2c6" role="tab" data-tab-index="1" aria-selected="false" aria-label="' + TXT.reviews + ' untuk ' + esc(p.name) + '">' + TXT.reviews + '</button>' +
-          '<button class="hh2c6" role="tab" data-tab-index="2" aria-selected="false" aria-label="' + TXT.about + ' untuk ' + esc(p.name) + '">' + TXT.about + '</button>' +
+          tabHtml(0, TXT.overview, p, true) + tabHtml(1, TXT.menuTab, p, false) +
+          tabHtml(2, TXT.reviews, p, false) + tabHtml(3, TXT.about, p, false) +
         '</div>' +
         '<div class="body" id="tabbody"></div>' +
       '</div>';
 
-    var tabs = app.querySelectorAll('[role="tab"]');
+    var tabs = app.querySelectorAll('.tabs button');
     Array.prototype.forEach.call(tabs, function (t, i) {
       t.addEventListener('click', function () { selectTab(p, i); });
     });
     selectTab(p, 0);
   }
 
+  // Urutan tab di Maps asli: Ringkasan(0) | Menu(1) | Ulasan(2) | Tentang(3).
+  // Varian tabs_without_role: tombol tab TANPA atribut role/aria-selected (hanya data-tab-index).
+  function tabHtml(i, label, p, selected) {
+    var role = GLOBAL.tabs_without_role ? '' : ' role="tab" aria-selected="' + (selected ? 'true' : 'false') + '"';
+    return '<button class="hh2c6"' + role + ' data-tab-index="' + i + '" aria-label="' + label + ' untuk ' + esc(p.name) + '">' + label + '</button>';
+  }
+
   function selectTab(p, i) {
-    if (i === 1 && GLOBAL.login_wall) { showLoginWall(); return; }       // ulasan terkunci: tab tidak berpindah
-    var tabs = app.querySelectorAll('[role="tab"]');
-    Array.prototype.forEach.call(tabs, function (t, k) { t.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    if (i === 2 && GLOBAL.login_wall) { showLoginWall(); return; }       // ulasan terkunci: tab tidak berpindah
+    var tabs = app.querySelectorAll('.tabs button');
+    if (!GLOBAL.tabs_without_role) {
+      Array.prototype.forEach.call(tabs, function (t, k) { t.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    }
     var body = document.getElementById('tabbody');
     if (i === 0) { renderOverview(p, body); }
-    else if (i === 1) { renderReviews(p, body); }
+    else if (i === 1) { body.innerHTML = '<div class="scroll"><div class="card">MENU-MOCK daftar menu ' + esc(p.name) + '</div></div>'; }
+    else if (i === 2) { renderReviews(p, body); }
     else { body.innerHTML = '<div class="scroll"><div class="card">Tentang ' + esc(p.name) + '</div></div>'; }
   }
 
@@ -179,7 +188,7 @@
         '</div>' +
       '</div>';
     var more = document.getElementById('more-reviews');
-    if (more) more.addEventListener('click', function () { selectTab(p, 1); });
+    if (more) more.addEventListener('click', function () { selectTab(p, 2); });
     wireExpand(body);
   }
 

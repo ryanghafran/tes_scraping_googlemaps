@@ -9,7 +9,7 @@ Semua logika yang khusus untuk Google Maps:
 
 Penyebab utama data hanya ~5-10 ulasan per tempat di versi lama:
   1. Tab "Ulasan" dianggap sudah terbuka hanya karena ADA kartu ulasan di halaman, padahal tab
-     "Ikhtisar" juga menampilkan beberapa kartu preview. Scroll lalu dilakukan di tab yang salah.
+     "Ringkasan" juga menampilkan beberapa kartu preview. Scroll lalu dilakukan di tab yang salah.
   2. Kartu dibaca sekali di AKHIR; jumlah kartu di DOM dipakai sebagai satu-satunya sinyal.
   3. Tidak ada pemulihan saat pemuatan macet (scroll naik-turun, muat ulang halaman).
 Versi ini memanen kartu pada SETIAP langkah scroll berdasarkan data-review-id (stabil, tidak
@@ -193,8 +193,11 @@ function tambah(el, s) { if (dipakai.indexOf(el) < 0 && nampak(el)) { dipakai.pu
 Array.from(document.querySelectorAll('[role="tab"]')).forEach(function (el) {
   if (/^(ulasan|reviews?)$/i.test(labelTab(el))) tambah(el, 'role=tab');
 });
-var idx1 = document.querySelector('button[data-tab-index="1"]');
-if (idx1 && !/^(ikhtisar|overview|tentang|about)$/i.test(labelTab(idx1))) tambah(idx1, 'data-tab-index=1');
+// Cadangan bila atribut role="tab" hilang: cari tombol bernomor tab yang LABEL-nya 'Ulasan'. Urutan tab di Maps asli
+// adalah Ringkasan | Menu | Ulasan | Tentang, jadi posisi tab tidak boleh diandalkan (tab ke-2 adalah 'Menu').
+Array.from(document.querySelectorAll('[data-tab-index]')).forEach(function (el) {
+  if (/^(ulasan|reviews?)$/i.test(labelTab(el))) tambah(el, 'data-tab-index');
+});
 Array.from(document.querySelectorAll('button, [role="button"]')).forEach(function (el) {
   if (dalamKartu(el)) return;
   var lab = (el.getAttribute('aria-label') || '');

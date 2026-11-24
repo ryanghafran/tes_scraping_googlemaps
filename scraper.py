@@ -16,6 +16,7 @@
 
   Opsi berguna (lengkap: python scraper.py --help):
     python scraper.py --login                 login Google di profil scraper (wajib sekali; pakai akun khusus)
+    python scraper.py --diagnosa              periksa kenapa Chrome tidak bisa dibuka
     python scraper.py --cek-status            cek cafe mana yang tutup lalu berhenti
     python scraper.py --target 4000           ubah target total ulasan
     python scraper.py --batas-sesi 200 --istirahat 15   mode hati-hati (istirahat otomatis)
@@ -54,9 +55,11 @@ from penyimpanan import (
 )
 from peramban import (
     PESAN_LOGIN,
+    ChromeTidakBisaDibukaError,
     DiblokirGoogleError,
     LoginDiperlukanError,
     Peramban,
+    jalankan_diagnosa,
     login_manual,
     ringkas_error,
     sesi_mati,
@@ -427,12 +430,15 @@ def cek_login_awal(pb: Peramban):
 
 def verifikasi_login() -> int:
     """Membuka Chrome scraper sebentar untuk memeriksa apakah login tersimpan. Returns kode keluar."""
-    pb = Peramban(headless=False)
+    pb = Peramban()
     try:
         pb.mulai()
         pb.buka(f"{cfg.MAPS_BASE}?hl={cfg.BAHASA}")
         pb.tidur(2.5, 3.5)
         st = status_login(pb)
+    except ChromeTidakBisaDibukaError as e:
+        print("\n" + str(e))
+        return 1
     except Exception as e:
         print(f"\nTidak bisa memeriksa status login: {ringkas_error(e)}")
         return 1
@@ -470,6 +476,8 @@ def buat_parser() -> argparse.ArgumentParser:
     p.add_argument("--headless", action="store_true", help="jalankan Chrome tanpa jendela (CAPTCHA tidak bisa diselesaikan manual)")
     p.add_argument("--login", action="store_true",
                    help="login ke Google di profil scraper (WAJIB sekali: tanpa login Google tidak membuka ulasan lengkap)")
+    p.add_argument("--diagnosa", action="store_true",
+                   help="periksa kenapa Chrome tidak bisa dibuka (profil terkunci, versi tidak cocok, dll.)")
     p.add_argument("--cek-status", action="store_true", help="hanya cek status buka/tutup tiap tempat lalu berhenti")
     p.add_argument("--ekspor", action="store_true", help="hanya buat ulang hasil_ulasan.csv dari data master")
     p.add_argument("--ringkasan", action="store_true", help="tampilkan ringkasan status lalu berhenti")
@@ -497,6 +505,8 @@ def terapkan_opsi(o: argparse.Namespace):
 def jalankan(o: argparse.Namespace) -> int:
     siapkan_logging()
     terapkan_opsi(o)
+    if o.diagnosa:
+        return jalankan_diagnosa()
     if o.login:
         return jalankan_login()
     garis("GOOGLE MAPS REVIEW SCRAPER - Coffee Shop Bandung", "=")
@@ -580,6 +590,10 @@ def jalankan(o: argparse.Namespace) -> int:
         log.error(f"BERHENTI: {e}")
         print(f"\n[BERHENTI] {e}")
         kode = 3
+    except ChromeTidakBisaDibukaError as e:
+        log.error(f"BERHENTI: {str(e).splitlines()[0]}")
+        print(f"\n[BERHENTI] {e}")
+        kode = 2
     except (DiblokirGoogleError, BerhentiError) as e:
         log.error(f"BERHENTI: {e}")
         print(f"\n[BERHENTI] {e}")

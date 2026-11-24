@@ -3,7 +3,7 @@ Tes integrasi: Chrome sungguhan (headless) terhadap mock Google Maps.
 
 Inilah bukti bahwa mekanisme scroll/panen/pemulihan bekerja pada browser nyata, termasuk
 perilaku "patologis" yang menjadi dugaan penyebab masalah di dunia nyata:
-  - tab Ikhtisar punya kartu preview (versi lama mengira itu tab Ulasan sudah terbuka)
+  - tab Ringkasan punya kartu preview (versi lama mengira itu tab Ulasan sudah terbuka)
   - pemuat ulasan yang macet kecuali digoyang / hanya bereaksi pada event wheel
   - DOM yang dirampingkan (virtualisasi), class CSS yang berubah total
   - CAPTCHA, browser yang mati di tengah jalan, daftar yang benar-benar macet
@@ -29,7 +29,7 @@ from gmaps import (
     resolve_tempat,
 )
 from penyimpanan import KOLOM_CSV, PenyimpananUlasan, StatusTempat, baca_daftar_input
-from peramban import DiblokirGoogleError, LoginDiperlukanError
+from peramban import DiblokirGoogleError, LoginDiperlukanError, jalankan_diagnosa
 
 pytestmark = pytest.mark.integrasi
 CEPAT = {"latency": [40, 120]}
@@ -89,9 +89,9 @@ def test_antarmuka_bahasa_inggris_label_tab_urutan_dan_status(pb, buat_mock, mon
 
 # ─── Tab Ulasan: perbaikan akar masalah #1 ────────────────────────────────────
 
-def test_kartu_preview_di_tab_ikhtisar_bukan_bukti_tab_ulasan_terbuka(pb, buat_mock):
+def test_kartu_preview_di_tab_ringkasan_bukan_bukti_tab_ulasan_terbuka(pb, buat_mock):
     m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200)], "Kopi A")
-    assert len(pb.js(JS_IDS)["ids"]) == 3                      # ada 3 kartu preview di Ikhtisar (jebakan versi lama)...
+    assert len(pb.js(JS_IDS)["ids"]) == 3                      # ada 3 kartu preview di Ringkasan (jebakan versi lama)...
     assert pb.js(JS_TAB_AKTIF)["aktif"] is False               # ...tetapi tab Ulasan BELUM terbuka
     buka_ulasan(pb, info, "terbaru")
     st = pb.js(JS_TAB_AKTIF)
@@ -382,3 +382,33 @@ def test_total_ulasan_dibaca_dari_label_ulasan_lainnya_jika_blok_rating_tidak_ad
           "document.getElementById('more-reviews').textContent='Ulasan lainnya (2.283)';")
     detail = pb.js(gmaps.JS_DETAIL_TEMPAT)
     assert detail["total"] == "2.283" and gmaps.angka_dari_teks(detail["total"]) == 2283
+
+
+# ─── Tab asli Maps: Ringkasan | Menu | Ulasan | Tentang (dari screenshot pengguna) ─
+
+def test_tab_ulasan_dicari_lewat_label_bukan_posisi_tab_menu_tidak_ikut_terbuka(pb, buat_mock):
+    """Tab ke-2 di Maps asli adalah 'Menu'. Tanpa atribut role=tab, tab Ulasan harus dikenali dari LABEL-nya."""
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200)], "Kopi A", {"tabs_without_role": True})
+    buka_ulasan(pb, info, "terbaru")
+    st = pb.js(JS_TAB_AKTIF)
+    assert st["aktif"] and st["alasan"] in ("tombol-urutkan", "url")        # tanpa role=tab: dikenali dari tombol Urutkan / URL
+    assert "MENU-MOCK" not in pb.js("return document.body.innerText")        # tab 'Menu' tidak pernah diklik
+    assert len(pb.js(JS_IDS)["ids"]) >= 8
+
+
+def test_empat_tab_dengan_role_tab_terbaca_sebagai_ulasan(pb, buat_mock):
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 120)], "Kopi A")
+    assert pb.js("return Array.from(document.querySelectorAll('[role=tab]')).map(t => t.innerText.trim())") == \
+        ["Ringkasan", "Menu", "Ulasan", "Tentang"]
+    h = ambil_ulasan_tempat(pb, store, info, 30, ["terbaru"])
+    assert (h.baru, h.alasan) == (30, "kuota")
+
+
+# ─── Diagnosa Chrome dengan Chrome sungguhan ──────────────────────────────────
+
+def test_diagnosa_dengan_chrome_sungguhan_berhasil_dan_menulis_log_chromedriver(lingkungan, chrome_tersedia, capsys):
+    assert jalankan_diagnosa() == 0
+    keluar = capsys.readouterr().out
+    assert "BERHASIL" in keluar and "KESIMPULAN" in keluar
+    log_driver = os.path.join(cfg.DIR_DEBUG, "chromedriver_diagnosa.log")
+    assert os.path.exists(log_driver) and os.path.getsize(log_driver) > 0

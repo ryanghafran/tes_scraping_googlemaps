@@ -28,8 +28,9 @@ python scraper.py --login
 ```
 
 Chrome biasa akan terbuka dengan profil khusus scraper (`.chrome_profile/`). Login ke akun Google, buka satu tempat di
-Maps dan pastikan "Ulasan lainnya" menampilkan daftar ulasan, **tutup jendela Chrome**, lalu tekan ENTER di terminal.
-Sesi login tersimpan di profil itu dan dipakai ulang oleh scraper pada jalan berikutnya.
+Maps dan pastikan "Ulasan lainnya" (atau tab "Ulasan") menampilkan daftar ulasan, **tutup jendela Chrome**, lalu tekan ENTER
+di terminal. Scraper menunggu sampai profil benar-benar dilepas Chrome; jika masih ada Chrome yang memakainya, scraper
+menawarkan mematikannya. Sesi login tersimpan di profil itu dan dipakai ulang pada jalan berikutnya.
 
 - **Pakai akun Google khusus, bukan akun utama.** Mengotomatisasi Google Maps bertentangan dengan Ketentuan Layanan
   Google; risikonya akun yang dipakai dibatasi. Jangan berlebihan (jeda acak sudah diatur otomatis).
@@ -69,6 +70,7 @@ Jika salah satunya bermasalah, lihat folder `debug/` (screenshot + HTML) dan `sc
 |---|---|
 | `python scraper.py` | Jalan normal sampai target tercapai |
 | `python scraper.py --login` | Login ke Google di profil scraper (wajib sekali) |
+| `python scraper.py --diagnosa` | Periksa kenapa Chrome tidak bisa dibuka (profil terkunci, versi tidak cocok, dll.) |
 | `python scraper.py --cek-status` | Hanya cek cafe mana yang tutup, buang dari daftar, lalu berhenti |
 | `python scraper.py --target 4000` | Ubah target total ulasan |
 | `python scraper.py --maks-per-tempat 200` | Batasi ulasan per tempat (agar dataset beragam) |
@@ -177,6 +179,20 @@ jalankan ulang. Scraper memakai profil Chrome terpisah (`.chrome_profile/`), buk
 Selesaikan manual di jendela Chrome; scraper lanjut sendiri. Bila berulang, pakai mode hati-hati
 (`--batas-sesi 200 --istirahat 15`), tunggu 30–60 menit, atau ganti jaringan (mis. hotspot HP).
 
+**Error "session not created: Chrome instance exited" / "Chrome tidak bisa dibuka dengan profil scraper"?**
+Hampir selalu berarti folder profil `.chrome_profile` masih dipakai proses Chrome lain: jendela login (`--login`) yang
+belum benar-benar tertutup, atau sisa Chrome dari jalan sebelumnya yang crash. Scraper menunggu lalu mencoba lagi dan,
+di terminal interaktif, **menawarkan mematikan proses Chrome yang memakai profil scraper** (Chrome biasa Anda aman).
+Jika masih gagal: tutup semua jendela Chrome, akhiri proses "Google Chrome" di Task Manager (atau restart komputer), lalu
+jalankan ulang. Untuk mengetahui penyebab pastinya jalankan:
+
+```bash
+python scraper.py --diagnosa
+```
+
+lalu kirim keluarannya beserta `debug/chromedriver_diagnosa.log`. Perintah itu menguji membuka Chrome dengan profil
+scraper dan dengan profil kosong, sehingga jelas apakah masalahnya di profil (terkunci/rusak) atau di Chrome/chromedriver.
+
 **Muncul pesan "[BERHENTI] Google meminta LOGIN untuk membuka ulasan lengkap"?**
 Jalankan `python scraper.py --login` (lihat bagian "Wajib: login Google sekali"), lalu jalankan scraper lagi. Jika
 scraper melapor "Profil Chrome scraper sedang dipakai Chrome lain", tutup semua jendela Chrome yang dibuka lewat
@@ -212,7 +228,7 @@ kolom `nama_reviewer` setelah pengumpulan selesai.
 ## Pengujian
 
 Google Maps tidak bisa diakses dari lingkungan pengujian otomatis, jadi scraper diuji terhadap halaman tiruan
-(`tests/mock_maps`) yang meniru perilaku penting Google Maps (kartu preview di tab Ikhtisar, lazy-load 10 ulasan per
+(`tests/mock_maps`) yang meniru perilaku penting Google Maps (kartu preview di tab Ringkasan, lazy-load 10 ulasan per
 scroll, pemuat yang macet, CAPTCHA, dinding login, browser yang mati, dst.) memakai Chrome sungguhan.
 
 ```bash
