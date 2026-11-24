@@ -464,3 +464,16 @@ def test_daftar_lambat_dimuat_ulang_setelah_urutan_dipilih_tidak_dianggap_kosong
     m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 300, mock={"sort_reload_ms": 4000})], "Kopi A")
     h = ambil_ulasan_tempat(pb, store, info, 20, ["terendah"])
     assert (h.alasan, h.baru) == ("kuota", 20)
+
+
+def test_urutan_yang_tidak_pernah_memuat_daftar_jatuh_ke_urutan_bawaan_maps(pb, buat_mock, monkeypatch):
+    """
+    Temuan log pengguna: di tiga tempat daftar tetap kosong setelah memilih 'terendah' (puluhan detik). Scraper tidak
+    boleh pulang dengan tangan kosong: pakai urutan bawaan Maps dan catat urutannya sebagai 'relevan'.
+    """
+    monkeypatch.setattr(cfg, "TIMEOUT_DAFTAR_SETELAH_URUTAN", 3)
+    monkeypatch.setattr(cfg, "TIMEOUT_DAFTAR_KOSONG", 3)
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 300, mock={"sort_broken": True})], "Kopi A")
+    h = ambil_ulasan_tempat(pb, store, info, 20, ["terendah"])
+    assert (h.baru, h.alasan) == (20, "kuota")
+    assert {r["urutan"] for r in store.rekaman} == {"relevan"}

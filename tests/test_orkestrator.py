@@ -420,3 +420,30 @@ def test_pelambatan_hanya_sementara_dan_pulih_bertahap_setelah_tempat_yang_berha
     pb.faktor_lambat = 3.0
     jalankan_ulasan(daftar, status, store, pb)
     assert 1.0 <= pb.faktor_lambat < 1.5                       # 3.0 -> 2.25 -> 1.69 -> 1.27 -> 1.0
+
+
+def test_tempat_yang_hanya_butuh_sedikit_ulasan_tidak_dikunjungi_demi_efisiensi(lingkungan, monkeypatch):
+    """Temuan log pengguna: 33 tempat dibuka satu per satu hanya untuk menambah 1 ulasan (30-60 detik per kunjungan)."""
+    daftar = ["A", "B", "C"]
+    status, store = siapkan_status(daftar), PenyimpananUlasan()
+    for n, c in {"A": 100, "B": 156, "C": 156}.items():
+        for i in range(c):
+            store.tambah(n, "x", f"lama{i}", 5, "x", f"lama {n} {i}")
+    fake, diambil = ambil_palsu({n: 1000 for n in daftar})
+    monkeypatch.setattr(scraper, "ambil_ulasan_tempat", fake)
+    monkeypatch.setattr(cfg, "TARGET_TOTAL_ULASAN", 100 + 156 + 156 + 70)
+    jalankan_ulasan(daftar, status, store)
+    assert diambil == {"A": 61, "B": 0, "C": 0}              # B dan C hanya butuh +5: tidak dibuka
+
+
+def test_berhenti_bila_sisa_target_tersebar_terlalu_tipis(lingkungan, monkeypatch):
+    daftar = ["A", "B", "C"]
+    status, store = siapkan_status(daftar), PenyimpananUlasan()
+    for n in daftar:
+        for i in range(156):
+            store.tambah(n, "x", f"lama{i}", 5, "x", f"lama {n} {i}")
+    fake, diambil = ambil_palsu({n: 1000 for n in daftar})
+    monkeypatch.setattr(scraper, "ambil_ulasan_tempat", fake)
+    monkeypatch.setattr(cfg, "TARGET_TOTAL_ULASAN", 3 * 156 + 3)
+    jalankan_ulasan(daftar, status, store)
+    assert diambil == {"A": 0, "B": 0, "C": 0}               # tidak ada kunjungan sia-sia untuk +1 ulasan

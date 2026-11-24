@@ -297,6 +297,13 @@ def tahap_ulasan(pb: Peramban, daftar: list[str], status: StatusTempat, store: P
             break
         hitung = {n: store.jumlah_tempat(status.ambil(n)["nama_resmi"]) for n in aktif}
         batas_ronde = rencana_batas(hitung, kurang, cfg.MAKS_ULASAN_PER_TEMPAT)
+        # Satu kunjungan memakan 30-60 detik: tempat yang hanya perlu beberapa ulasan baru dilewati.
+        bermakna = {n for n in aktif if batas_ronde[n] - hitung[n] >= cfg.MIN_TAMBAH_PER_KUNJUNGAN}
+        if not bermakna:
+            log.info(f"Sisa target ({kurang}) tersebar terlalu tipis (kurang dari {cfg.MIN_TAMBAH_PER_KUNJUNGAN} ulasan "
+                     "per tempat); berhenti.")
+            break
+        batas_ronde = {n: (b if n in bermakna else hitung[n]) for n, b in batas_ronde.items()}
         level = max(batas_ronde.values())
         garis(f"RONDE {ronde}: butuh {kurang} ulasan lagi; tiap tempat diisi sampai ~{level} ulasan "
               f"({sum(1 for n in aktif if batas_ronde[n] > hitung[n])} dari {len(aktif)} tempat ikut)", "=")

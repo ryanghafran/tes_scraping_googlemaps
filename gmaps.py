@@ -668,7 +668,7 @@ def pilih_urutan(pb: Peramban, mode: str) -> bool:
     # Setelah urutan dipilih daftar dimuat ulang dan sempat KOSONG sebentar (lebih lama di tempat yang ulasannya
     # ribuan). Menunggu hanya "id pertama berubah" salah: daftar kosong pun lolos, lalu panen mengira tidak ada ulasan.
     mulai, pernah_kosong = time.time(), False
-    while time.time() - mulai < 25:
+    while time.time() - mulai < cfg.TIMEOUT_DAFTAR_SETELAH_URUTAN:
         ids = pb.js(JS_IDS)["ids"]
         if not ids:
             pernah_kosong = True
@@ -677,6 +677,9 @@ def pilih_urutan(pb: Peramban, mode: str) -> bool:
         elif time.time() - mulai > 4:
             break                                        # daftar tidak berubah (mis. urutan yang dipilih sama)
         time.sleep(0.4)
+    if not pb.js(JS_IDS)["ids"]:
+        log.warning(f"  Daftar ulasan tetap kosong setelah memilih urutan '{mode}'")
+        return False
     log.info(f"  Ulasan diurutkan: {mode}")
     time.sleep(0.8)
     return True
@@ -795,7 +798,7 @@ def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadlin
             h.alasan = "langkah"
             break
         if not ids_dom and langkah == 0:
-            if _tunggu(lambda: bool(pb.js(JS_IDS)["ids"]), 15.0):      # daftar lambat dimuat: panen ulang, jangan menyerah
+            if _tunggu(lambda: bool(pb.js(JS_IDS)["ids"]), cfg.TIMEOUT_DAFTAR_KOSONG):      # daftar lambat dimuat: panen ulang, jangan menyerah
                 langkah = -1
                 continue
             h.alasan = "kosong"
@@ -870,6 +873,13 @@ def ambil_ulasan_tempat(pb: Peramban, store, info: dict, kuota_total: int, dafta
             time.sleep(1.0)
         log.info(f"  Mengambil hingga {jatah} ulasan baru (urutan: {mode})")
         h = panen_ulasan(pb, store, info, jatah, mode, time.time() + cfg.MAKS_MENIT_PER_TEMPAT * 60)
+        if i == 0 and h.alasan == "kosong" and mode != "relevan":
+            # Di beberapa tempat daftar tidak pernah terisi setelah urutan dipilih. Jangan pulang dengan tangan kosong:
+            # pakai urutan bawaan Maps (data tersimpan dengan urutan='relevan' agar asal-usulnya jelas).
+            log.warning(f"  Daftar kosong setelah memilih urutan '{mode}'; mencoba urutan bawaan Maps ('relevan')")
+            mode = "relevan"
+            buka_ulasan(pb, info, mode)
+            h = panen_ulasan(pb, store, info, jatah, mode, time.time() + cfg.MAKS_MENIT_PER_TEMPAT * 60)
         total.baru += h.baru
         total.terlihat = max(total.terlihat, h.terlihat)
         total.alasan = h.alasan

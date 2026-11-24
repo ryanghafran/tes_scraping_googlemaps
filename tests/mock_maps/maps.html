@@ -321,6 +321,7 @@
           S.mode = parseInt(it.getAttribute('data-index'), 10);
           S.order = orderFor(S.mode); S.loaded = 0; list.innerHTML = ''; scroller.scrollTop = 0; S.lastTop = 0;
           menu.parentNode.removeChild(menu);
+          if (mk.sort_broken) { S.blocked = true; return; }          // simulasi: daftar tetap kosong setelah urutan dipilih
           S.loading = true; spinner.style.display = 'block';
           setTimeout(function () { appendBatch(10); S.loading = false; spinner.style.display = 'none'; }, mk.sort_reload_ms != null ? mk.sort_reload_ms : rand(200, 500));
         });

@@ -101,6 +101,9 @@ MAKS_GAGAL_BERUNTUN   = 5     # Berhenti jika segini tempat gagal berturut-turut
 
 TIMEOUT_MUAT_BATCH    = 9     # Detik menunggu kartu baru muncul setelah scroll
 MAKS_MACET            = 4     # Berapa kali scroll tanpa hasil sebelum dianggap macet/habis
+TIMEOUT_DAFTAR_SETELAH_URUTAN = 25   # Detik menunggu daftar terisi kembali setelah memilih urutan
+TIMEOUT_DAFTAR_KOSONG = 15           # Detik tambahan sebelum daftar yang masih kosong dinyatakan kosong
+MIN_TAMBAH_PER_KUNJUNGAN = 10        # Tempat yang hanya perlu < segini ulasan baru tidak dibuka (1 kunjungan = 30-60 detik)
 MAKS_RELOAD_PER_TEMPAT = 1    # Muat ulang halaman tempat jika macet sebelum daftar habis (di praktik jarang menolong)
 MAKS_LANGKAH_SCROLL   = 900   # Pengaman: maks scroll per tempat per urutan
 MAKS_MENIT_PER_TEMPAT = 25    # Pengaman: maks waktu per tempat per urutan
