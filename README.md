@@ -245,8 +245,9 @@ python scraper.py              # ambil cabang yang benar + tempat yang belum ada
 ```
 
 - `wanderlog.py` membaca tiap halaman tempat Wanderlog: **Google place ID, koordinat, alamat, kategori**. Aturan
-  kategori: hanya yang mengandung *cafe / coffee shop* (termasuk kopi/espresso). Restoran **saja** dibuang (dicatat di
-  `daftar_dibuang_wanderlog.csv`); restoran yang juga cafe/coffee shop tetap diambil.
+  kategori: hanya yang mengandung *cafe / coffee shop* (termasuk kopi/espresso). Restoran **saja** dibuang; restoran yang juga cafe/coffee shop tetap diambil. Tempat berlabel **Permanently /
+  Temporarily Closed** di Wanderlog juga dibuang. Semua yang dibuang dicatat beserta alasannya di
+  `daftar_dibuang_wanderlog.csv`. Ulasan tempat yang tidak ada di daftar ikut terbuang oleh `--audit --terapkan`.
 - Place ID (`ChIJ…`) adalah penyandian ID internal Maps, jadi cabang dicocokkan **persis** (bukan menebak lewat nama).
   Scraper membuka tempat lewat place ID → `cid` → pencarian nama+alamat, lalu **memverifikasi**: ID sama, atau
   koordinat ≤ `JARAK_MAKS_CABANG_METER` (150 m) dari koordinat Wanderlog, atau jalan+nomor alamat sama. Jika hanya cabang

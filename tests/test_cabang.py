@@ -78,6 +78,22 @@ def test_baca_halaman_wanderlog_dan_pilah_kategori():
     assert wanderlog.baca_detail("<html>struktur berubah</html>", "1") is None
 
 
+def test_tempat_berlabel_tutup_di_wanderlog_dibuang_dari_daftar():
+    def halaman(wid, nama, pid, badge=""):
+        h = _halaman_detail(wid, nama, pid, -6.9, 107.6, ["Coffee shop"], f"Jl. {nama} No.1")
+        return h + (f'<div class="badge CategoryAndPriceBadges__sizeLg">{badge}</div>' if badge else "")
+    daftar = "".join(f'<a href="/place/details/{i}/x">x</a>' for i in (1, 2, 3, 4))
+    isi = {"1": halaman(1, "Buka", "ChIJ0wfmo4zmaC4RC89sbOwR2Ro"),
+           "2": halaman(2, "TutupPermanen", "ChIJT3xaAvznaC4RJDnZ7npthlE", "Permanently Closed"),
+           "3": halaman(3, "TutupSementara", "ChIJ-1_7xErmaC4RtEVWbHb_QIE", "Temporarily Closed"),
+           # teks 'Permanently closed' di jadwal harian ('Sunday: Permanently closed') BUKAN label tutup tempat
+           "4": halaman(4, "BukaTapiHariMinggu", "ChIJIfJPAEvmaC4R5W007AZKRAE") + "<span>Sunday: Permanently closed</span>"}
+    ok, buang = wanderlog.bangun_daftar(daftar, lambda path, wid: isi[wid], jeda=0)
+    assert [d["nama_tempat"] for d in ok] == ["Buka", "BukaTapiHariMinggu"]
+    alasan = {d["nama_tempat"]: d["alasan"] for d in buang}
+    assert "tutup permanen" in alasan["TutupPermanen"] and "tutup sementara" in alasan["TutupSementara"]
+
+
 def test_wanderlog_main_dari_folder_menulis_daftar_dan_yang_dibuang(tmp_path):
     (tmp_path / "list.html").write_text('<a href="/place/details/11/a">A</a><a href="/place/details/22/b">B</a>', encoding="utf-8")
     (tmp_path / "11.html").write_text(_halaman_detail(11, "Kopi A", "ChIJ0wfmo4zmaC4RC89sbOwR2Ro", -6.89, 107.61,

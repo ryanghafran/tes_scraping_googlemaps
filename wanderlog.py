@@ -10,8 +10,9 @@ Pemakaian:
     python wanderlog.py --url <url-daftar>    # daftar Wanderlog lain
     python wanderlog.py --dari-folder DIR     # baca halaman HTML yang sudah diunduh (tanpa internet)
 
-Aturan kategori (sesuai ketentuan skripsi): HANYA cafe dan/atau coffee shop. Tempat yang kategorinya
-restoran saja dibuang; restoran yang JUGA cafe/coffee shop tetap diambil. Yang dibuang dicatat di
+Aturan (sesuai ketentuan skripsi): HANYA cafe dan/atau coffee shop yang masih buka. Tempat yang kategorinya
+restoran saja dibuang; restoran yang JUGA cafe/coffee shop tetap diambil. Tempat yang di Wanderlog berlabel
+"Permanently Closed" / "Temporarily Closed" juga dibuang. Yang dibuang dicatat di
 `daftar_dibuang_wanderlog.csv` beserta alasannya.
 """
 
@@ -103,7 +104,10 @@ def baca_detail(html: str, wid: str) -> dict | None:
     except ValueError:
         return None
     place_id = meta.group(2)
+    lencana = re.search(r'CategoryAndPriceBadges__sizeLg">(Permanently|Temporarily) [Cc]losed</div>', html)
     return {
+        "status": {"Permanently": "tutup_permanen", "Temporarily": "tutup_sementara"}.get(lencana.group(1), "aktif")
+        if lencana else "aktif",
         "nama_tempat": nama, "alamat": alamat_s, "place_id": place_id, "fid": fid_dari_place_id(place_id),
         "lat": float(peta.group(1)), "lng": float(peta.group(2)), "kategori": " | ".join(kategori),
         "wanderlog_id": str(wid),
@@ -127,11 +131,13 @@ def tulis_daftar(path: str, baris: list[dict]):
 
 
 def pilah(semua: list[dict]) -> tuple[list[dict], list[dict]]:
-    """(diterima, dibuang+alasan) menurut aturan kategori cafe/coffee shop."""
+    """(diterima, dibuang+alasan): hanya cafe/coffee shop yang tidak berlabel tutup di Wanderlog."""
     ok, buang = [], []
     for d in semua:
         kat = [k.strip() for k in d["kategori"].split("|")]
-        if kategori_cafe(kat):
+        if d.get("status", "aktif") != "aktif":
+            buang.append({**d, "alasan": f"{d['status'].replace('_', ' ')} (label Wanderlog)"})
+        elif kategori_cafe(kat):
             ok.append(d)
         else:
             buang.append({**d, "alasan": f"kategori hanya restoran: {d['kategori'] or '-'}"})
@@ -188,12 +194,12 @@ def main(argv=None) -> int:
     if buang:
         dibuang = os.path.join(os.path.dirname(o.keluar) or ".", "daftar_dibuang_wanderlog.csv")
         with open(dibuang, "w", encoding="utf-8", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=KOLOM_DAFTAR + ["alasan"], lineterminator="\n")
+            w = csv.DictWriter(f, fieldnames=KOLOM_DAFTAR + ["alasan"], lineterminator="\n", extrasaction="ignore")
             w.writeheader()
             w.writerows(buang)
-        print(f"{len(buang)} dibuang (restoran saja):")
+        print(f"{len(buang)} dibuang:")
         for b in buang:
-            print(f"  - {b['nama_tempat']}  [{b['kategori']}]")
+            print(f"  - {b['nama_tempat']}  [{b['alasan']}]")
     return 0
 
 
