@@ -202,7 +202,7 @@ def test_cli_audit_hanya_melapor_dan_terapkan_membuang_dengan_cadangan(lingkunga
 
     assert scraper.main(["--audit", "--terapkan"]) == 0
     keluar = capsys.readouterr().out
-    assert "4 ulasan cabang salah DIBUANG" in keluar
+    assert "4 ulasan DIBUANG" in keluar
     sisa = PenyimpananUlasan()
     assert sisa.total() == 4 and sisa.jumlah_tempat("Wheels Coffee Roasters - Juanda (Dago)") == 0
     assert sisa.jumlah_tempat("Wheels Coffee Roasters - Heritage Lifestyle Hub (Riau)") == 2
@@ -213,6 +213,44 @@ def test_cli_audit_hanya_melapor_dan_terapkan_membuang_dengan_cadangan(lingkunga
     assert "Juanda" not in csv_isi and "mantap 0" in csv_isi
     # ulasan baru tidak bisa 'hidup kembali' lewat dedup: kunci lama ikut dibuang, bukan tertinggal
     assert sisa.tambah("Wheels Coffee Roasters - Juanda (Dago)", "x", "R0", 5, "x", "enak banget 0") is True
+
+
+def test_audit_membuang_ulasan_tempat_tutup_walau_cabangnya_benar(lingkungan, capsys):
+    """Kopi Ireng: ada di Wanderlog (cabang benar) tetapi di Google Maps TUTUP -> ulasannya tidak boleh ikut."""
+    tulis_daftar(cfg.INPUT_CSV, BARIS)
+    store = PenyimpananUlasan()
+    isi_master(store)
+    store.tutup()
+    st = StatusTempat()
+    st.catat("Kopi Anjis", nama_resmi="Kopi Anjis", alamat="Jl. Bengawan No.34, Cihapit, Kec. Bandung Wetan",
+             status_buka="tutup_permanen", url="u", id_tempat="0x2e68e000:0x2")
+    with open(cfg.FILE_TUTUP, "w", encoding="utf-8-sig") as f:       # tempat tutup yang sudah dipangkas dari daftar
+        f.write("nama_input,nama_resmi,status,url,dicek_pada\nTemu,Warung Entah,tutup_sementara,u,x\n")
+
+    assert scraper.main(["--audit"]) == 0
+    keluar = capsys.readouterr().out
+    assert "TUTUP" in keluar and "tutup permanen" in keluar and "Belum ada yang diubah" in keluar
+    assert PenyimpananUlasan().total() == 8
+
+    assert scraper.main(["--audit", "--terapkan"]) == 0
+    sisa = PenyimpananUlasan()
+    assert sisa.jumlah_tempat("Kopi Anjis") == 0                      # tutup permanen (menurut status)
+    assert sisa.jumlah_tempat("Warung Entah") == 0                    # tutup (menurut daftar_coffeeshop_tutup.csv)
+    assert sisa.jumlah_tempat("Wheels Coffee Roasters - Heritage Lifestyle Hub (Riau)") == 2
+    assert sisa.total() == 2
+
+
+def test_cek_ulang_mengosongkan_status_buka_semua_tempat(lingkungan, monkeypatch):
+    tulis_daftar(cfg.INPUT_CSV, BARIS[:1])
+    st = StatusTempat()
+    n = BARIS[0]["nama_tempat"]
+    st.catat(n, nama_resmi="W", url="u", id_tempat="0x1:0x2", status_buka="aktif", status_scrape="selesai")
+    dipanggil = []
+    monkeypatch.setattr(scraper, "Peramban", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("browser dibuka")))
+    with pytest.raises(RuntimeError, match="browser dibuka"):        # status kosong -> harus butuh browser (resolve ulang)
+        scraper.main(["--cek-ulang", "--cek-status"])
+    s = StatusTempat().ambil(n)
+    assert s["url"] == "" and s["status_buka"] == "" and s["status_scrape"] == "selesai"
 
 
 def test_cli_audit_tanpa_kolom_identitas_memberi_petunjuk(lingkungan, capsys):

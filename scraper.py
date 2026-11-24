@@ -37,13 +37,15 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import logging
+import os
 import sys
 import time
 from dataclasses import dataclass
 
 import konfigurasi as cfg
-from audit import audit_master, teks_audit
+from audit import audit_master, teks_audit, tempat_tutup, tutup_cocok
 from gmaps import (
     CabangSalahError,
     TabUlasanGagal,
@@ -525,24 +527,37 @@ def jalankan_login() -> int:
 
 # ─── Program utama ────────────────────────────────────────────────────────────
 
+def _baris_tutup() -> list[dict]:
+    if not os.path.exists(cfg.FILE_TUTUP):
+        return []
+    with open(cfg.FILE_TUTUP, "r", encoding="utf-8-sig", newline="") as f:
+        return list(csv.DictReader(f))
+
+
 def jalankan_audit(store: PenyimpananUlasan, status: StatusTempat, referensi: dict[str, dict], terapkan: bool) -> int:
-    """--audit: laporkan (dan dengan --terapkan: buang) ulasan dari cabang yang tidak ada di daftar Wanderlog."""
+    """
+    --audit: laporkan (dan dengan --terapkan: buang) ulasan yang (a) berasal dari cabang yang tidak ada di
+    daftar Wanderlog, atau (b) milik tempat yang TUTUP permanen/sementara (menurut status_tempat.json dan
+    daftar_coffeeshop_tutup.csv).
+    """
     if not referensi:
         print("Daftar input belum punya identitas cabang (kolom place_id/fid/lat/lng/alamat).\n"
               "Buat dulu dengan:  python wanderlog.py")
         return 1
     from audit import cocokkan
-    hasil = audit_master(store.rekaman, referensi)
+    tutup = tempat_tutup(status.data, _baris_tutup())
+    hasil = audit_master(store.rekaman, referensi, tutup)
     print(teks_audit(hasil))
-    if not hasil["salah"]:
-        print("\nSemua ulasan di data master sudah sesuai cabang di daftar.")
+    buang = hasil["salah"] + hasil["tutup"]
+    if not buang:
+        print("\nSemua ulasan di data master sesuai cabang di daftar dan bukan dari tempat tutup.")
         return 0
     if not terapkan:
-        print(f"\nBelum ada yang diubah. Untuk membuang {hasil['salah']} ulasan cabang salah:\n"
+        print(f"\nBelum ada yang diubah. Untuk membuang {buang} ulasan (cabang salah + tempat tutup):\n"
               "    python scraper.py --audit --terapkan")
         return 0
-    dibuang, cadangan = store.hapus_jika(lambda r: not cocokkan(r, referensi))
-    print(f"\n{dibuang} ulasan cabang salah DIBUANG dari data master. Cadangan master lama: {cadangan}")
+    dibuang, cadangan = store.hapus_jika(lambda r: not cocokkan(r, referensi) or bool(tutup_cocok(r, tutup)))
+    print(f"\n{dibuang} ulasan DIBUANG dari data master. Cadangan master lama: {cadangan}")
     print("Berikutnya: python scraper.py   (mengambil cabang yang benar & yang belum ada)")
     path = store.ekspor_csv()
     print(f"hasil_ulasan.csv dibuat ulang: {path}")
@@ -564,6 +579,8 @@ def buat_parser() -> argparse.ArgumentParser:
                    help="periksa data master terhadap daftar Wanderlog: ulasan mana yang dari cabang salah")
     p.add_argument("--terapkan", action="store_true",
                    help="dengan --audit: BUANG ulasan cabang salah dari data master (cadangan dibuat otomatis)")
+    p.add_argument("--cek-ulang", action="store_true",
+                   help="paksa cek ulang status buka/tutup SEMUA tempat di daftar lewat place ID (browser dibuka)")
     p.add_argument("--cek-status", action="store_true", help="hanya cek status buka/tutup tiap tempat lalu berhenti")
     p.add_argument("--ekspor", action="store_true", help="hanya buat ulang hasil_ulasan.csv dari data master")
     p.add_argument("--ringkasan", action="store_true", help="tampilkan ringkasan status lalu berhenti")
@@ -617,12 +634,18 @@ def jalankan(o: argparse.Namespace) -> int:
     referensi = baca_referensi()
     if o.audit:
         return jalankan_audit(store, status, referensi, o.terapkan)
+    if o.cek_ulang:
+        for n in daftar:
+            status.catat(n, url="", id_tempat="", status_buka="", status_scrape="belum" if status.ambil(n)["status_scrape"] in (
+                "salah_cabang", "tidak_ditemukan") else status.ambil(n)["status_scrape"])
+        log.info(f"--cek-ulang: status buka/tutup {len(daftar)} tempat akan dicek ulang")
     if referensi:
         selaraskan_status(daftar, status, referensi)
-        hasil = audit_master(store.rekaman, referensi)
-        if hasil["salah"]:
-            print(f"\n[PERHATIAN] {hasil['salah']} ulasan di data master berasal dari cabang yang TIDAK ada di daftar "
-                  "Wanderlog.\n            Lihat: python scraper.py --audit   |   buang: python scraper.py --audit --terapkan\n")
+        hasil = audit_master(store.rekaman, referensi, tempat_tutup(status.data, _baris_tutup()))
+        if hasil["salah"] or hasil["tutup"]:
+            print(f"\n[PERHATIAN] Data master berisi {hasil['salah']} ulasan cabang yang TIDAK ada di daftar Wanderlog "
+                  f"dan {hasil['tutup']} ulasan tempat TUTUP.\n            Lihat: python scraper.py --audit   |   "
+                  "buang: python scraper.py --audit --terapkan\n")
     if o.reset_gagal:
         for n in daftar:
             s = status.ambil(n)

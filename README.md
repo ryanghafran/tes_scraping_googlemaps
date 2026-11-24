@@ -239,7 +239,8 @@ banyak cafe punya beberapa cabang bernama mirip, dan Google Maps bisa membuka ca
 ```bash
 python wanderlog.py            # unduh daftar Wanderlog -> tulis daftar_coffeeshop.csv (daftar lama dicadangkan)
 python scraper.py --audit      # bandingkan data master dengan daftar: mana yang cabang salah? (tidak mengubah apa pun)
-python scraper.py --audit --terapkan   # buang ulasan cabang salah dari master (cadangan master dibuat otomatis)
+python scraper.py --audit --terapkan   # buang ulasan cabang salah DAN tempat tutup dari master (cadangan otomatis)
+python scraper.py --cek-ulang          # paksa cek ulang status buka/tutup semua tempat lewat place ID
 python scraper.py              # ambil cabang yang benar + tempat yang belum ada
 ```
 
@@ -252,6 +253,9 @@ python scraper.py              # ambil cabang yang benar + tempat yang belum ada
   lain yang bisa dibuka, tempat ditandai `salah_cabang` dan **tidak di-scrape** (cek `log_gagal.txt`; ulangi dengan
   `--reset-gagal`).
 - Status tempat lama yang cabangnya tidak sesuai daftar direset otomatis dan dicek ulang.
+- `--audit` juga menandai ulasan milik tempat yang **tutup permanen/sementara** (menurut `data/status_tempat.json` dan
+  `daftar_coffeeshop_tutup.csv`); `--terapkan` membuangnya. Status tutup dibaca dari Google Maps, jadi bila ragu jalankan
+  `--cek-ulang` dulu lalu `--audit`.
 - `--audit` mencocokkan tiap ulasan: lewat `id_tempat` bila ada, atau (ulasan lama) lewat jalan+nomor di kolom `lokasi`.
   Jangan `--impor` ulang CSV lama yang berisi cabang salah; kalau terlanjur, jalankan `--audit --terapkan` lagi.
 - Bila halaman Wanderlog berubah dan `wanderlog.py` tidak bisa membaca, daftar lama **tidak ditimpa**.
