@@ -454,3 +454,13 @@ def test_tanpa_masalah_tidak_ada_peringatan_kualitas(pb, buat_mock):
     m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200)], "Kopi A")
     h = ambil_ulasan_tempat(pb, store, info, 40, ["terbaru"])
     assert h.peringatan == ""
+
+
+def test_daftar_lambat_dimuat_ulang_setelah_urutan_dipilih_tidak_dianggap_kosong(pb, buat_mock):
+    """
+    Temuan dari log pengguna: tepat setelah memilih urutan 'terendah' daftar sempat KOSONG sebentar; tempat yang
+    pemuatannya lambat dinyatakan 'daftar ulasan kosong (0 kartu termuat)' padahal ulasannya ribuan.
+    """
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 300, mock={"sort_reload_ms": 4000})], "Kopi A")
+    h = ambil_ulasan_tempat(pb, store, info, 20, ["terendah"])
+    assert (h.alasan, h.baru) == ("kuota", 20)

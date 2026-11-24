@@ -407,3 +407,16 @@ def test_peringatan_kualitas_data_ditampilkan_per_tempat(lingkungan, monkeypatch
     jalankan_ulasan(["A"], status, store)
     keluar = capsys.readouterr().out
     assert "PERINGATAN KUALITAS DATA: 30 dari 30 ulasan tanpa rating" in keluar and "debug/" in keluar
+
+
+def test_pelambatan_hanya_sementara_dan_pulih_bertahap_setelah_tempat_yang_berhasil(lingkungan, monkeypatch):
+    """Temuan dari log pengguna: faktor jeda 3.0x tidak pernah turun sehingga sisa proses 3x lebih lambat."""
+    daftar = ["A", "B", "C", "D"]
+    status, store = siapkan_status(daftar), PenyimpananUlasan()
+    fake, _ = ambil_palsu({n: 1000 for n in daftar})
+    monkeypatch.setattr(scraper, "ambil_ulasan_tempat", fake)
+    monkeypatch.setattr(cfg, "TARGET_TOTAL_ULASAN", 400)
+    pb = PbPalsu()
+    pb.faktor_lambat = 3.0
+    jalankan_ulasan(daftar, status, store, pb)
+    assert 1.0 <= pb.faktor_lambat < 1.5                       # 3.0 -> 2.25 -> 1.69 -> 1.27 -> 1.0

@@ -101,7 +101,7 @@ MAKS_GAGAL_BERUNTUN   = 5     # Berhenti jika segini tempat gagal berturut-turut
 
 TIMEOUT_MUAT_BATCH    = 9     # Detik menunggu kartu baru muncul setelah scroll
 MAKS_MACET            = 4     # Berapa kali scroll tanpa hasil sebelum dianggap macet/habis
-MAKS_RELOAD_PER_TEMPAT = 2    # Muat ulang halaman tempat jika macet sebelum daftar habis
+MAKS_RELOAD_PER_TEMPAT = 1    # Muat ulang halaman tempat jika macet sebelum daftar habis (di praktik jarang menolong)
 MAKS_LANGKAH_SCROLL   = 900   # Pengaman: maks scroll per tempat per urutan
 MAKS_MENIT_PER_TEMPAT = 25    # Pengaman: maks waktu per tempat per urutan
 MAKS_DEBUG_PER_SESI   = 12    # Maks screenshot/HTML debug per sesi

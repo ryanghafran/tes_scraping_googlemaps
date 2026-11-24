@@ -322,7 +322,7 @@
           S.order = orderFor(S.mode); S.loaded = 0; list.innerHTML = ''; scroller.scrollTop = 0; S.lastTop = 0;
           menu.parentNode.removeChild(menu);
           S.loading = true; spinner.style.display = 'block';
-          setTimeout(function () { appendBatch(10); S.loading = false; spinner.style.display = 'none'; }, rand(200, 500));
+          setTimeout(function () { appendBatch(10); S.loading = false; spinner.style.display = 'none'; }, mk.sort_reload_ms != null ? mk.sort_reload_ms : rand(200, 500));
         });
       });
     });

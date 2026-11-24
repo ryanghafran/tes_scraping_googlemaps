@@ -665,7 +665,18 @@ def pilih_urutan(pb: Peramban, mode: str) -> bool:
         pb.simpan_debug("menu_urutan")
         return False
     _klik(pb, pilih["el"])
-    _tunggu(lambda: pb.js(JS_IDS)["ids"][:1] != id_awal, 6.0)
+    # Setelah urutan dipilih daftar dimuat ulang dan sempat KOSONG sebentar (lebih lama di tempat yang ulasannya
+    # ribuan). Menunggu hanya "id pertama berubah" salah: daftar kosong pun lolos, lalu panen mengira tidak ada ulasan.
+    mulai, pernah_kosong = time.time(), False
+    while time.time() - mulai < 25:
+        ids = pb.js(JS_IDS)["ids"]
+        if not ids:
+            pernah_kosong = True
+        elif ids[:1] != id_awal or pernah_kosong:
+            break                                        # daftar baru sudah terisi
+        elif time.time() - mulai > 4:
+            break                                        # daftar tidak berubah (mis. urutan yang dipilih sama)
+        time.sleep(0.4)
     log.info(f"  Ulasan diurutkan: {mode}")
     time.sleep(0.8)
     return True
@@ -784,11 +795,14 @@ def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadlin
             h.alasan = "langkah"
             break
         if not ids_dom and langkah == 0:
+            if _tunggu(lambda: bool(pb.js(JS_IDS)["ids"]), 15.0):      # daftar lambat dimuat: panen ulang, jangan menyerah
+                langkah = -1
+                continue
             h.alasan = "kosong"
             break
 
         # 3) scroll & tunggu kartu baru
-        langkah += 1
+        langkah = max(langkah, 0) + 1
         info_scroll = pb.js(JS_SCROLL_BAWAH)
         _roda(pb, info_scroll, 400)
         if goyang_dulu and info_scroll is not None:

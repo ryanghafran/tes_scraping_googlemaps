@@ -351,6 +351,8 @@ def tahap_ulasan(pb: Peramban, daftar: list[str], status: StatusTempat, store: P
             store.ekspor_csv(urutan_tempat=urutan_nama)
             tambah_ronde += hasil.baru
             sesi.baru += hasil.baru
+            if hasil.alasan == "kuota" and pb.faktor_lambat > 1.0:     # pelambatan hanya sementara: pulih bertahap
+                pb.faktor_lambat = max(1.0, pb.faktor_lambat * 0.75)
             gagal_beruntun = gagal_beruntun + 1 if (hasil.baru == 0 and not habis) else 0
             if gagal_beruntun >= cfg.MAKS_GAGAL_BERUNTUN:
                 raise BerhentiError(
