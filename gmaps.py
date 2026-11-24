@@ -28,9 +28,11 @@ from difflib import SequenceMatcher
 from urllib.parse import quote_plus
 
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 import konfigurasi as cfg
-from peramban import Peramban, sesi_mati
+from peramban import PESAN_LOGIN, LoginDiperlukanError, Peramban, sesi_mati
 
 log = logging.getLogger(__name__)
 
@@ -152,6 +154,13 @@ if (rate) {
   total = r2 ? (r2.getAttribute('aria-label') || t(r2)) : '';
   if (!total) { var m = t(rate).match(/\(([\d.,]+)\)/); total = m ? m[1] : ''; }
 }
+if (!total) {   // cadangan: label tombol 'Ulasan lainnya (2.283)'
+  var tombolTotal = Array.from(main.querySelectorAll('button, a, [role="button"]'));
+  for (var q = 0; q < tombolTotal.length && !total; q++) {
+    var mt = t(tombolTotal[q]).match(/^(?:ulasan lainnya|more reviews|lihat semua ulasan|see all reviews)\s*\(([\d.,]+)\)/i);
+    if (mt) total = mt[1];
+  }
+}
 return {nama: t(h1),
         alamat: t(alamat) || (alamatEl ? (alamatEl.getAttribute('aria-label') || t(alamatEl)) : ''),
         kategori: t(kat), rating: rating, total: total,
@@ -206,6 +215,51 @@ return Array.from(document.querySelectorAll('button[data-value="Sort"], button[a
 JS_ITEM_MENU = _JS_UMUM + r"""
 return Array.from(document.querySelectorAll('[role="menuitemradio"], [role="menu"] [role="menuitem"], [role="menu"] li'))
   .filter(nampak).map(function (el) { return {el: el, teks: norm(el.innerText || el.textContent)}; });
+"""
+
+# Dinding login Google: modal "Login untuk menikmati fitur terbaik dari Google Maps" (tombol 'Tutup' dan 'Login'),
+# muncul saat pengunjung tanpa login mencoba membuka ulasan lengkap.
+JS_DINDING_LOGIN = _JS_UMUM + r"""
+var POLA_TOMBOL = /^(login|log in|sign in|masuk)$/i;
+var teks = norm(document.body ? document.body.innerText : '').slice(0, 30000);
+var polaTeks = /login untuk menikmati|masuk untuk menikmati|sign in to (get|enjoy|unlock)/i.test(teks);
+var dialog = Array.from(document.querySelectorAll('[role="dialog"], [role="alertdialog"], [aria-modal="true"]')).filter(nampak);
+var struktur = dialog.some(function (d) {
+  var t = norm(d.innerText || '');
+  var adaLogin = Array.from(d.querySelectorAll('button, a, [role="button"]')).some(function (b) {
+    return POLA_TOMBOL.test(norm(b.innerText || b.getAttribute('aria-label') || ''));
+  });
+  return adaLogin && t.length < 1500;
+});
+return {ada: polaTeks || struktur, via: polaTeks ? 'teks' : (struktur ? 'dialog' : '')};
+"""
+
+JS_TUTUP_DINDING = _JS_UMUM + r"""
+var POLA = /^(tutup|close|nanti saja|not now|no thanks|tidak, terima kasih)$/i;
+var dialog = Array.from(document.querySelectorAll('[role="dialog"], [role="alertdialog"], [aria-modal="true"]')).filter(nampak);
+for (var i = 0; i < dialog.length; i++) {
+  var bs = Array.from(dialog[i].querySelectorAll('button, a, [role="button"]'));
+  for (var j = 0; j < bs.length; j++) {
+    var tx = norm(bs[j].innerText || bs[j].getAttribute('aria-label') || '');
+    if (POLA.test(tx)) { bs[j].click(); return tx; }
+  }
+}
+return '';
+"""
+
+# Apakah Chrome scraper sedang login ke Google? 'masuk' | 'keluar' | 'tidak_jelas' (heuristik; hanya untuk peringatan).
+JS_STATUS_LOGIN = _JS_UMUM + r"""
+var els = Array.from(document.querySelectorAll('a, button, [role="button"]')).filter(nampak);
+var masuk = els.some(function (el) {
+  return /^(akun google|google account)\b/i.test(el.getAttribute('aria-label') || '') ||
+         /accounts\.google\.com\/SignOutOptions/.test(el.getAttribute('href') || '');
+});
+var keluar = els.some(function (el) {
+  if (el.closest('[role="dialog"], [aria-modal="true"]')) return false;
+  return /^(login|log in|sign in|masuk)$/i.test(norm(el.innerText || '')) ||
+         /accounts\.google\.com\/ServiceLogin/.test(el.getAttribute('href') || '');
+});
+return masuk ? 'masuk' : (keluar ? 'keluar' : 'tidak_jelas');
 """
 
 JS_IDS = _JS_UMUM + r"""
@@ -520,18 +574,58 @@ def resolve_tempat(pb: Peramban, nama_input: str) -> dict:
 
 # ─── Membuka tab Ulasan & memilih urutan ──────────────────────────────────────
 
+def ada_dinding_login(pb: Peramban) -> bool:
+    """True jika modal 'Login untuk menikmati fitur terbaik dari Google Maps' sedang tampil."""
+    return bool(pb.js(JS_DINDING_LOGIN)["ada"])
+
+
+def tutup_dinding_login(pb: Peramban) -> bool:
+    """Menutup modal login (tombol 'Tutup'; cadangan: Escape). Returns True jika modal sudah hilang."""
+    pb.js(JS_TUTUP_DINDING)
+    time.sleep(0.8)
+    if ada_dinding_login(pb):
+        try:
+            ActionChains(pb.driver).send_keys(Keys.ESCAPE).perform()
+        except WebDriverException as e:
+            if sesi_mati(e):
+                raise
+        time.sleep(0.8)
+    return not ada_dinding_login(pb)
+
+
+def status_login(pb: Peramban) -> str:
+    """'masuk' | 'keluar' | 'tidak_jelas' (heuristik dari tombol 'Login' / tombol akun di pojok kanan atas)."""
+    return pb.js(JS_STATUS_LOGIN)
+
+
+def _dinding_login_terdeteksi(pb: Peramban, konteks: str):
+    """
+    Jika modal login tampil: coba tutup. Bila setelah ditutup tab Ulasan tetap tidak terbuka berarti
+    ulasan lengkap memang terkunci di balik login -> LoginDiperlukanError (tidak ada gunanya mencoba lagi).
+    """
+    if not ada_dinding_login(pb):
+        return
+    log.warning(f"  Dinding login Google terdeteksi ({konteks})")
+    pb.simpan_debug(f"dinding_login_{konteks}")
+    tutup_dinding_login(pb)
+    if not pb.js(JS_TAB_AKTIF)["aktif"]:
+        raise LoginDiperlukanError(PESAN_LOGIN)
+
+
 def _klik_tab_ulasan(pb: Peramban) -> bool:
-    if pb.js(JS_TAB_AKTIF)["aktif"]:
+    if pb.js(JS_TAB_AKTIF)["aktif"] and not ada_dinding_login(pb):
         return True
     for _ in range(3):
         for k in pb.js(JS_KANDIDAT_TAB):
             if not _klik(pb, k["el"]):
                 continue
             log.info(f"  Klik tab Ulasan via: {k['s']}")
-            if _tunggu(lambda: pb.js(JS_TAB_AKTIF)["aktif"], 4.0):
+            if _tunggu(lambda: pb.js(JS_TAB_AKTIF)["aktif"] or ada_dinding_login(pb), 4.0):
+                _dinding_login_terdeteksi(pb, "tab_ulasan")      # raise bila ulasan terkunci di balik login
                 st = pb.js(JS_TAB_AKTIF)
-                log.info(f"  Tab Ulasan terbuka (terverifikasi lewat: {st['alasan']})")
-                return True
+                if st["aktif"]:
+                    log.info(f"  Tab Ulasan terbuka (terverifikasi lewat: {st['alasan']})")
+                    return True
         pb.tidur(1.5, 2.5)
     return False
 
@@ -574,6 +668,8 @@ def buka_ulasan(pb: Peramban, info: dict, mode: str):
         pb.simpan_debug(f"buka_{info['nama_resmi']}")
         raise TabUlasanGagal(f"halaman tempat tidak terbuka (keadaan: {keadaan})")
     pb.tidur(*cfg.JEDA_BUKA_HALAMAN)
+    if ada_dinding_login(pb):                       # modal yang muncul sendiri saat halaman dibuka tidak boleh menghalangi
+        tutup_dinding_login(pb)
     if not _klik_tab_ulasan(pb):
         pb.simpan_debug(f"tab_ulasan_{info['nama_resmi']}")
         raise TabUlasanGagal("tab Ulasan tidak berhasil dibuka (lihat folder debug/)")
@@ -680,6 +776,10 @@ def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadlin
         log.info(f"  Scroll {langkah}: tidak ada kartu baru ({macet}/{cfg.MAKS_MACET}), "
                  f"{len(terlihat)} kartu terlihat" + (f" dari {total_maps}" if total_maps else ""))
         pb.periksa_halangan()
+        if ada_dinding_login(pb):                # Google meminta login di tengah pemuatan ulasan
+            pb.simpan_debug(f"dinding_login_{nama}")
+            tutup_dinding_login(pb)
+            raise LoginDiperlukanError(PESAN_LOGIN)
         if total_maps and len(terlihat) >= total_maps and macet >= 2:     # dua kali macet = benar-benar ujung daftar
             h.habis, h.alasan = True, "habis"
             break

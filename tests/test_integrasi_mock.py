@@ -29,7 +29,7 @@ from gmaps import (
     resolve_tempat,
 )
 from penyimpanan import KOLOM_CSV, PenyimpananUlasan, StatusTempat, baca_daftar_input
-from peramban import DiblokirGoogleError
+from peramban import DiblokirGoogleError, LoginDiperlukanError
 
 pytestmark = pytest.mark.integrasi
 CEPAT = {"latency": [40, 120]}
@@ -313,3 +313,72 @@ def test_main_tempat_dengan_daftar_ulasan_kosong_padahal_ada_ulasan_dicatat_gaga
     assert s["status_scrape"] == "gagal" and s["percobaan_gagal"] == 1 and not s["habis"]
     assert "Kopi X" in open(cfg.LOG_GAGAL, encoding="utf-8").read()
     assert any(b.startswith("kosong_") for b in os.listdir(cfg.DIR_DEBUG))
+
+
+# ─── Dinding login Google (temuan dari screenshot pengguna) ───────────────────
+
+def test_dinding_login_saat_ulasan_dibuka_menghasilkan_LoginDiperlukanError(pb, buat_mock, lingkungan):
+    """Tanpa login, 'Ulasan lainnya' memunculkan modal 'Login untuk menikmati fitur terbaik dari Google Maps'."""
+    buat_mock([tempat("Kopi A", 300)], {"logged_in": False, "login_wall": True})
+    info = resolve_tempat(pb, "Kopi A")
+    store = PenyimpananUlasan()
+    with pytest.raises(LoginDiperlukanError, match="--login"):
+        ambil_ulasan_tempat(pb, store, info, 50, ["terbaru"])
+    assert store.total() == 0
+    assert any(b.startswith("dinding_login_") for b in os.listdir(cfg.DIR_DEBUG))      # screenshot + HTML untuk diagnosis
+    assert not gmaps.ada_dinding_login(pb)                                              # modal sudah ditutup
+
+
+def test_dinding_login_di_tengah_scroll_menyimpan_data_sebelumnya_lalu_berhenti(pb, buat_mock):
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 300, mock={"login_wall_after_reqs": 3})], "Kopi A",
+                          {"logged_in": True})
+    with pytest.raises(LoginDiperlukanError):
+        ambil_ulasan_tempat(pb, store, info, 200, ["terbaru"])
+    assert 10 < store.total() < 60                                                      # ulasan sebelum dinding tidak hilang
+
+
+def test_modal_login_yang_bisa_ditutup_dan_tab_tetap_terbuka_tidak_dianggap_dinding(pb, buat_mock):
+    """Tanpa login_wall di mock, tab Ulasan terbuka normal walau pengguna belum login: tidak boleh alarm palsu."""
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200)], "Kopi A", {"logged_in": False})
+    h = ambil_ulasan_tempat(pb, store, info, 30, ["terbaru"])
+    assert (h.baru, h.alasan) == (30, "kuota")
+
+
+def test_status_login_masuk_dan_keluar(pb, buat_mock):
+    for logged_in, harapan in ((True, "masuk"), (False, "keluar")):
+        m = buat_mock([tempat("Kopi A")], {"logged_in": logged_in})
+        pb.buka(m.base_url + "/search/Kopi+A+Bandung?hl=id")
+        assert gmaps.status_login(pb) == harapan
+
+
+def test_main_dinding_login_berhenti_dengan_instruksi_kode_3_tanpa_menandai_gagal(
+        lingkungan, buat_mock, chrome_tersedia, capsys):
+    buat_mock([tempat("Kopi A", 300), tempat("Kopi C", 200)], {"logged_in": False, "login_wall": True})
+    tulis_input(["Kopi A", "Kopi C"])
+    assert scraper.main(["--target", "50", "--headless"]) == 3
+    keluar = capsys.readouterr().out
+    assert "BELUM login" in keluar                          # peringatan dini sebelum mulai mengambil ulasan
+    assert "python scraper.py --login" in keluar            # instruksi akhir yang jelas
+    st = StatusTempat()
+    assert st.ambil("Kopi A")["percobaan_gagal"] == 0 and st.ambil("Kopi A")["status_scrape"] != "gagal"
+    assert st.ambil("Kopi A")["url"] and st.ambil("Kopi C")["url"]       # hasil Tahap 1 tersimpan: setelah login tidak diulang
+    assert not os.path.exists(cfg.LOG_GAGAL)
+
+
+def test_belum_login_tanpa_dinding_hanya_memperingatkan_dan_tetap_lanjut(lingkungan, buat_mock, chrome_tersedia, capsys):
+    buat_mock([tempat("Kopi A", 200)], {"logged_in": False})
+    tulis_input(["Kopi A"])
+    assert scraper.main(["--target", "30", "--headless"]) == 0
+    assert "BELUM login" in capsys.readouterr().out
+    assert len(baca_hasil()) == 30
+
+
+def test_total_ulasan_dibaca_dari_label_ulasan_lainnya_jika_blok_rating_tidak_ada(pb, buat_mock):
+    """Cadangan: label tombol 'Ulasan lainnya (2.283)' seperti pada screenshot Maps asli."""
+    m = buat_mock([tempat("Kopi A", 2283)])
+    pb.buka(m.base_url + "/search/Kopi+A+Bandung?hl=id")
+    gmaps._tunggu_keadaan(pb)
+    pb.js("document.querySelector('div.F7nice').remove();"
+          "document.getElementById('more-reviews').textContent='Ulasan lainnya (2.283)';")
+    detail = pb.js(gmaps.JS_DETAIL_TEMPAT)
+    assert detail["total"] == "2.283" and gmaps.angka_dari_teks(detail["total"]) == 2283

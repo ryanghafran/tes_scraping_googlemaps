@@ -6,6 +6,7 @@ Pengelolaan browser Chrome (Selenium):
   * mendeteksi sesi browser yang MATI agar bisa dibuka ulang (versi lama: satu crash =
     39 tempat gagal berturut-turut dengan 'invalid session id')
   * mendeteksi halangan Google (CAPTCHA 'unusual traffic', halaman consent)
+  * login Google manual di profil scraper (Google mewajibkan login untuk membuka ulasan lengkap)
   * menyimpan screenshot + HTML saat ada masalah, supaya penyebabnya bisa didiagnosis
 """
 
@@ -15,6 +16,9 @@ import logging
 import os
 import random
 import re
+import shutil
+import subprocess
+import sys
 import time
 
 from selenium import webdriver
@@ -37,6 +41,14 @@ log = logging.getLogger(__name__)
 
 class DiblokirGoogleError(Exception):
     """Google menampilkan CAPTCHA / 'lalu lintas tidak biasa' dan tidak terselesaikan."""
+
+
+class LoginDiperlukanError(Exception):
+    """Google meminta login ('Login untuk menikmati fitur terbaik...') sebelum ulasan lengkap bisa dibuka."""
+
+
+PESAN_LOGIN = ("Google meminta LOGIN untuk membuka ulasan lengkap (tanpa login hanya ±3-5 ulasan preview per tempat "
+               "yang terlihat). Jalankan:  python scraper.py --login   lalu jalankan scraper lagi.")
 
 
 # ─── Deteksi sesi browser mati ────────────────────────────────────────────────
@@ -176,27 +188,29 @@ class Peramban:
         profil = os.path.abspath(cfg.DIR_PROFIL)
         os.makedirs(profil, exist_ok=True)
         servis = self._service()
-        terakhir = None
-        for percobaan in range(2):
+        maks = 3
+        for percobaan in range(1, maks + 1):
             try:
                 opsi = self._opsi(profil)
                 self.driver = (webdriver.Chrome(service=servis, options=opsi) if servis
                                else webdriver.Chrome(options=opsi))
                 break
             except (SessionNotCreatedException, WebDriverException) as e:
-                terakhir = e
                 pesan = str(e).lower()
-                profil_terpakai = any(k in pesan for k in
-                                      ("user data directory", "devtoolsactiveport", "chrome failed to start", "crashed"))
-                if percobaan == 0 and profil_terpakai:
-                    profil = f"{profil}_{time.strftime('%H%M%S')}"
-                    os.makedirs(profil, exist_ok=True)
-                    log.warning("Profil Chrome sedang dipakai Chrome lain (sisa proses lama?). "
-                                f"Memakai profil sementara. Detail: {ringkas_error(e, 140)}")
+                terkunci = any(k in pesan for k in
+                               ("user data directory", "devtoolsactiveport", "chrome failed to start", "crashed"))
+                if not terkunci:
+                    raise
+                if percobaan < maks:
+                    log.warning("Profil Chrome scraper masih terkunci (sisa proses Chrome sebelumnya?). "
+                                f"Menunggu lalu mencoba lagi ({percobaan}/{maks - 1})...")
+                    time.sleep(5)
                     continue
-                raise
-        if self.driver is None:                  # pengaman; seharusnya tak tercapai
-            raise terakhir
+                # SENGAJA tidak memakai profil sementara: sesi login Google tersimpan di profil ini.
+                raise RuntimeError(
+                    "Profil Chrome scraper sedang dipakai Chrome lain. Tutup semua jendela Chrome yang dibuka lewat "
+                    "'--login' dan matikan sisa proses chrome/chromedriver (Task Manager), lalu jalankan ulang. "
+                    f"Detail: {ringkas_error(e, 160)}") from e
         self.driver.set_page_load_timeout(cfg.TIMEOUT_HALAMAN)
         self._anti_deteksi()
         log.info(f"Chrome siap (versi {self.driver.capabilities.get('browserVersion', '?')}, "
@@ -325,3 +339,90 @@ class Peramban:
         except Exception as e:
             log.debug(f"Gagal menyimpan debug: {ringkas_error(e)}")
             return None
+
+
+# ─── Login Google manual ──────────────────────────────────────────────────────
+# Google Maps menampilkan "Login untuk menikmati fitur terbaik dari Google Maps" saat pengunjung
+# TANPA login mencoba membuka ulasan lengkap ("Ulasan lainnya"): tanpa login hanya ±3-5 ulasan
+# preview yang terlihat. Solusinya: login sekali di profil Chrome khusus scraper. Login dilakukan
+# di Chrome BIASA (bukan yang dikendalikan Selenium) karena Google sering menolak login pada
+# browser otomatis; sesi tersimpan di folder profil sehingga dipakai ulang oleh scraper.
+
+URL_LOGIN = ("https://accounts.google.com/ServiceLogin?hl={bahasa}"
+             "&continue=https%3A%2F%2Fwww.google.com%2Fmaps%3Fhl%3D{bahasa}")
+
+PETUNJUK_LOGIN = """
+==================================================================
+  LOGIN GOOGLE UNTUK SCRAPER
+==================================================================
+  Chrome akan terbuka dengan profil khusus scraper (folder .chrome_profile).
+
+   1. Login ke akun Google. DISARANKAN pakai akun khusus (bukan akun utama):
+      Google bisa membatasi akun yang dipakai untuk scraping.
+   2. Setelah login, buka salah satu tempat di Google Maps dan pastikan
+      tombol "Ulasan lainnya" benar-benar menampilkan daftar ulasan.
+   3. TUTUP jendela Chrome tersebut (tombol X), tunggu beberapa detik,
+      lalu kembali ke sini dan tekan ENTER.
+
+  Jangan membagikan atau meng-commit folder .chrome_profile (berisi sesi login Anda).
+==================================================================
+"""
+
+
+def _kandidat_chrome() -> list:
+    """Daftar lokasi Chrome yang layak dicoba, berurutan: CHROME_BINARY, lokasi umum Windows/Mac, lalu PATH."""
+    kandidat = []
+    if cfg.CHROME_BINARY:
+        kandidat.append(cfg.CHROME_BINARY)
+    if os.name == "nt":
+        for nama_env in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA"):
+            dasar = os.environ.get(nama_env)
+            if dasar:
+                kandidat.append(os.path.join(dasar, "Google", "Chrome", "Application", "chrome.exe"))
+    elif sys.platform == "darwin":
+        kandidat.append("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+    for nama in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome"):
+        lokasi = shutil.which(nama)
+        if lokasi:
+            kandidat.append(lokasi)
+    return kandidat
+
+
+def cari_chrome() -> str | None:
+    """Lokasi Chrome pertama yang benar-benar ada, atau None."""
+    for k in _kandidat_chrome():
+        if k and os.path.exists(k):
+            return k
+    return None
+
+
+def login_manual() -> bool:
+    """
+    Membuka Chrome biasa dengan profil scraper agar pengguna bisa login ke Google, lalu menunggu
+    sampai Chrome ditutup (profil terkunci selama Chrome masih hidup).
+    Returns True jika Chrome berhasil dibuka dan ditutup kembali.
+    """
+    chrome = cari_chrome()
+    if not chrome:
+        print("Chrome tidak ditemukan. Atur variabel lingkungan CHROME_BINARY ke lokasi chrome.exe, "
+              "mis. C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+        return False
+    profil = os.path.abspath(cfg.DIR_PROFIL)
+    os.makedirs(profil, exist_ok=True)
+    print(PETUNJUK_LOGIN)
+    proses = subprocess.Popen([
+        chrome, f"--user-data-dir={profil}", "--no-first-run", "--no-default-browser-check",
+        "--disable-background-mode", f"--lang={cfg.BAHASA}-ID" if cfg.BAHASA == "id" else f"--lang={cfg.BAHASA}",
+        URL_LOGIN.format(bahasa=cfg.BAHASA)])
+    try:
+        input("  Tekan ENTER di sini setelah selesai login dan jendela Chrome ditutup... ")
+    except EOFError:                              # tanpa terminal interaktif: tunggu sampai Chrome ditutup
+        proses.wait()
+    for _ in range(20):                           # beri waktu Chrome menutup diri & menyimpan cookie ke disk
+        if proses.poll() is not None:
+            break
+        time.sleep(1)
+    else:
+        print("  Chrome sepertinya belum tertutup penuh. Tutup jendelanya (atau matikan chrome.exe di Task "
+              "Manager) sebelum menjalankan scraper, kalau tidak profil akan terkunci.")
+    return True

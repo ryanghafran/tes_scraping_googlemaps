@@ -13,10 +13,33 @@ progres tersimpan dan ulasan yang sama tidak akan masuk dua kali.
 
 ```bash
 pip install -r requirements.txt     # Google Chrome harus sudah terpasang
+python scraper.py --login           # SEKALI SAJA: login ke Google di profil scraper (lihat bagian di bawah)
 python scraper.py
 ```
 
-Yang terjadi:
+### Wajib: login Google sekali
+
+Tanpa login, Google Maps hanya menampilkan ±3–5 ulasan *preview* per tempat. Saat "Ulasan lainnya" diklik muncul modal
+**"Login untuk menikmati fitur terbaik dari Google Maps"** dan ulasan lengkap tidak bisa dibuka. Itulah penyebab utama
+data lama hanya ±5 ulasan per tempat, dan **tidak ada trik scroll yang bisa melewatinya**: harus login.
+
+```bash
+python scraper.py --login
+```
+
+Chrome biasa akan terbuka dengan profil khusus scraper (`.chrome_profile/`). Login ke akun Google, buka satu tempat di
+Maps dan pastikan "Ulasan lainnya" menampilkan daftar ulasan, **tutup jendela Chrome**, lalu tekan ENTER di terminal.
+Sesi login tersimpan di profil itu dan dipakai ulang oleh scraper pada jalan berikutnya.
+
+- **Pakai akun Google khusus, bukan akun utama.** Mengotomatisasi Google Maps bertentangan dengan Ketentuan Layanan
+  Google; risikonya akun yang dipakai dibatasi. Jangan berlebihan (jeda acak sudah diatur otomatis).
+- Login sengaja dilakukan di Chrome biasa, bukan Chrome yang dikendalikan Selenium, karena Google sering menolak login
+  pada browser otomatis.
+- Jangan membagikan atau meng-commit folder `.chrome_profile/` (berisi sesi login Anda; sudah masuk `.gitignore`).
+- Jika belum login, scraper memberi peringatan di awal. Jika dinding login muncul, scraper **berhenti dengan pesan
+  yang jelas** (kode keluar 3) tanpa menandai tempat sebagai gagal; hasil Tahap 1 tetap tersimpan.
+
+Yang terjadi saat `python scraper.py`:
 
 1. **Tahap 1 — cek tempat.** Tiap nama di `daftar_coffeeshop.csv` dicari di Google Maps. Nama resmi, alamat, jumlah
    ulasan, dan **status buka/tutup** dibaca. Cafe berstatus **Tutup permanen** atau **Tutup sementara** otomatis
@@ -31,7 +54,7 @@ tetap terbuka (boleh ditutupi aplikasi lain, jangan di-minimize) dan jangan menu
 
 ### Uji cepat dulu (disarankan, ±3 menit)
 
-Karena Google sewaktu-waktu mengubah tampilan Maps, cek dulu dua hal sebelum jalan penuh:
+Setelah `--login`, cek dulu dua hal sebelum jalan penuh (Google sewaktu-waktu mengubah tampilan Maps):
 
 ```bash
 python scraper.py --cek-status                          # apakah pencarian & status buka/tutup terbaca? (tanpa mengambil ulasan)
@@ -45,6 +68,7 @@ Jika salah satunya bermasalah, lihat folder `debug/` (screenshot + HTML) dan `sc
 | Perintah | Fungsi |
 |---|---|
 | `python scraper.py` | Jalan normal sampai target tercapai |
+| `python scraper.py --login` | Login ke Google di profil scraper (wajib sekali) |
 | `python scraper.py --cek-status` | Hanya cek cafe mana yang tutup, buang dari daftar, lalu berhenti |
 | `python scraper.py --target 4000` | Ubah target total ulasan |
 | `python scraper.py --maks-per-tempat 200` | Batasi ulasan per tempat (agar dataset beragam) |
@@ -76,7 +100,7 @@ tes_scraping_googlemaps/
 ├── scraper.py             # PROGRAM UTAMA (jalankan ini): tahapan, ronde, opsi baris perintah
 ├── konfigurasi.py         # Semua pengaturan yang boleh Anda ubah
 ├── gmaps.py               # Logika khusus Google Maps: cari tempat, tab Ulasan, scroll, panen kartu
-├── peramban.py            # Chrome/Selenium: pemulihan saat browser mati, deteksi CAPTCHA
+├── peramban.py            # Chrome/Selenium: pemulihan saat browser mati, deteksi CAPTCHA, login Google
 ├── penyimpanan.py         # Data master, anti-duplikat, ekspor CSV, impor CSV lama
 ├── daftar_coffeeshop.csv  # INPUT: daftar nama coffee shop (kolom 'nama_tempat')
 ├── requirements.txt
@@ -115,10 +139,12 @@ Pemisah bisa diganti di `konfigurasi.py` (`CSV_SEPARATOR`).
 
 Analisis log dan data lama menunjukkan bahwa angka "±250" **bukan batas dari Google**: tiap tempat hanya
 menghasilkan ±5 ulasan (total file lama: 264 baris, tetapi hanya **220 ulasan unik** dari seluruh `hasil_ulasan*.csv`).
+Tangkapan layar Google Maps dari pengguna mengonfirmasi penyebab utamanya: **dinding login**.
 
 | Masalah di versi lama | Perbaikan |
 |---|---|
-| Tab "Ulasan" dianggap terbuka hanya karena ada kartu ulasan di halaman. Tab "Ikhtisar" juga menampilkan beberapa kartu preview, sehingga scroll bisa dilakukan di tab yang salah dan hanya ±5 ulasan terambil. | Tab diverifikasi lewat status tab terpilih (`aria-selected`), tombol "Urutkan", atau URL. Tombol di dalam kartu ulasan diabaikan. |
+| **Dinding login Google.** Tanpa login hanya ±3–5 ulasan preview yang terlihat; klik "Ulasan lainnya" memunculkan modal login. Versi lama tidak mengenalinya: pengecekan "tab terbuka" lolos karena kartu preview ada, jadi hanya ±5 ulasan per tempat yang terambil tanpa pesan error apa pun. | Login sekali lewat `--login` (sesi tersimpan di profil scraper). Dinding login dideteksi: program berhenti dengan instruksi jelas dan tidak menandai tempat sebagai gagal. Peringatan dini bila profil belum login. |
+| Tab "Ulasan" dianggap terbuka hanya karena ada kartu ulasan di halaman. | Tab diverifikasi lewat status tab terpilih (`aria-selected`), tombol "Urutkan", atau URL. Tombol di dalam kartu ulasan diabaikan. |
 | Kartu dibaca sekali di akhir; kemacetan pemuatan tidak ditangani. | Kartu dipanen di **setiap langkah scroll** berdasarkan `data-review-id`. Bila macet: scroll naik-turun, event roda mouse, lalu muat ulang halaman. |
 | Target "160 per tempat" dihitung dari jumlah *kartu* termasuk yang tanpa teks. | Target dihitung dari ulasan **berteks**; sisa target dibagi adil per ronde. |
 | Duplikat: kunci anti-duplikat memakai nama kueri, padahal CSV berisi nama resmi → tidak pernah cocok, tiap jalan ulang menambah ulasan yang sama. | Kunci memakai nama resmi + reviewer + teks (dinormalisasi) dan id ulasan. |
@@ -151,16 +177,18 @@ jalankan ulang. Scraper memakai profil Chrome terpisah (`.chrome_profile/`), buk
 Selesaikan manual di jendela Chrome; scraper lanjut sendiri. Bila berulang, pakai mode hati-hati
 (`--batas-sesi 200 --istirahat 15`), tunggu 30–60 menit, atau ganti jaringan (mis. hotspot HP).
 
-**Tiap tempat hanya terambil ±10 ulasan lalu macet (padahal ulasannya ribuan)?**
-Kemungkinan Google membatasi pengunjung yang tidak login. Scraper memakai profil Chrome terpisah (`.chrome_profile/`)
-yang menyimpan cookie, jadi Anda bisa login sekali ke sana (**pakai akun Google khusus, bukan akun utama**). Login lewat
-Chrome yang dikendalikan Selenium biasanya ditolak Google, jadi buka Chrome biasa dengan profil yang sama:
+**Muncul pesan "[BERHENTI] Google meminta LOGIN untuk membuka ulasan lengkap"?**
+Jalankan `python scraper.py --login` (lihat bagian "Wajib: login Google sekali"), lalu jalankan scraper lagi. Jika
+scraper melapor "Profil Chrome scraper sedang dipakai Chrome lain", tutup semua jendela Chrome yang dibuka lewat
+`--login` dan matikan sisa `chrome.exe` di Task Manager. Hasil Tahap 1 (nama resmi, status tutup, jumlah ulasan)
+sudah tersimpan sehingga tidak diulang.
 
-```
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir="C:\...\tes_scraping_googlemaps\.chrome_profile"
-```
-
-(sesuaikan lokasi Chrome dan folder proyek). Login di jendela itu, tutup, lalu jalankan `python scraper.py` lagi.
+**Login tidak berhasil / akun dibatasi Google?**
+Jangan ulangi terus-menerus. Alternatifnya: layanan pihak ketiga yang menjalankan pengambilan data untuk Anda lewat API
+(mis. Apify, Outscraper, SerpApi; umumnya berbayar atau berkuota gratis terbatas, periksa harga dan kuota terbaru).
+Hasilnya bisa dimasukkan dengan `python scraper.py --impor hasil.csv` (kolom harus dinamai `nama_tempat`, `lokasi`,
+`nama_reviewer`, `rating`, `tanggal`, `teks_ulasan`). API resmi Google Places hanya mengembalikan maksimal 5 ulasan per
+tempat sehingga tidak cukup untuk target ini.
 
 **Salah memilih tempat / cabang?**
 Nama resmi yang terpilih tampil di log dan di kolom `nama_tempat`. Jika berbeda dari yang dimaksud, tulis nama di
@@ -185,7 +213,7 @@ kolom `nama_reviewer` setelah pengumpulan selesai.
 
 Google Maps tidak bisa diakses dari lingkungan pengujian otomatis, jadi scraper diuji terhadap halaman tiruan
 (`tests/mock_maps`) yang meniru perilaku penting Google Maps (kartu preview di tab Ikhtisar, lazy-load 10 ulasan per
-scroll, pemuat yang macet, CAPTCHA, browser yang mati, dst.) memakai Chrome sungguhan.
+scroll, pemuat yang macet, CAPTCHA, dinding login, browser yang mati, dst.) memakai Chrome sungguhan.
 
 ```bash
 pip install pytest pandas

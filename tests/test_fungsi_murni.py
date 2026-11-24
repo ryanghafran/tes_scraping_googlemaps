@@ -51,6 +51,10 @@ def test_id_tempat_dan_tanggal_dan_url():
     url = "https://www.google.com/maps/place/X/@-6.9,107.6,17z/data=!4m6!3m5!1s0x2e68e6b5e8b3a1d1:0x4d6b7c5a9f8e3a21!8m2!3d-6.9"
     assert id_tempat_dari_url(url) == "0x2e68e6b5e8b3a1d1:0x4d6b7c5a9f8e3a21"
     assert id_tempat_dari_url("https://www.google.com/maps/search/x") == ""
+    # URL asli dari tangkapan layar Google Maps pengguna (Two Hands Full Dago)
+    asli = ("https://www.google.com/maps/place/Two+Hands+Full+Dago/@-6.8924806,107.6126885,17z/data=!3m1!4b1!4m6!3m5!"
+            "1s0x2e68e68ca3e607d3:0x1ad911ec6c6ccf0b!8m2!3d-6.8924806!4d107.6126885")
+    assert id_tempat_dari_url(asli) == "0x2e68e68ca3e607d3:0x1ad911ec6c6ccf0b"
     assert bersihkan_tanggal("Diedit 3 bulan lalu") == "3 bulan lalu"
     assert bersihkan_tanggal("Edited a year ago") == "a year ago"
     assert bersihkan_tanggal("sebulan lalu") == "sebulan lalu"

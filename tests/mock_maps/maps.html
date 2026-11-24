@@ -45,6 +45,32 @@
 
   var app = document.getElementById('app');
 
+  // Header kanan atas: tombol "Login" (belum login) atau tombol akun Google (sudah login).
+  (function () {
+    var hdr = document.createElement('div');
+    hdr.style.cssText = 'position:fixed;top:8px;right:12px;z-index:5';
+    hdr.innerHTML = (GLOBAL.logged_in === false)
+      ? '<a class="gb_login" href="https://accounts.google.com/ServiceLogin?hl=id" style="background:#1a73e8;color:#fff;padding:8px 16px;border-radius:20px">Login</a>'
+      : '<a class="gb_acct" aria-label="Akun Google: Penguji (penguji@example.com)" href="https://accounts.google.com/SignOutOptions?hl=id">P</a>';
+    document.body.appendChild(hdr);
+  })();
+
+  // Dinding login seperti di Google Maps asli: modal muncul saat pengunjung tanpa login membuka ulasan lengkap.
+  function showLoginWall() {
+    if (document.getElementById('login-wall')) return;
+    var d = document.createElement('div');
+    d.id = 'login-wall';
+    d.setAttribute('role', 'dialog');
+    d.setAttribute('aria-modal', 'true');
+    d.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:50;display:flex;align-items:center;justify-content:center';
+    d.innerHTML = '<div style="background:#fff;padding:24px;width:360px">' +
+      '<h2>Login untuk menikmati fitur terbaik dari Google Maps</h2>' +
+      '<ul><li><b>Ulasan &amp; foto:</b> Baca dan telusuri setiap ulasan dan foto.</li></ul>' +
+      '<div><button class="tutup">Tutup</button></div><div><button class="login">Login</button></div></div>';
+    document.body.appendChild(d);
+    d.querySelector('.tutup').addEventListener('click', function () { d.parentNode.removeChild(d); });
+  }
+
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function slug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, '+'); }
   function norm(s) { return s.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
@@ -130,6 +156,7 @@
   }
 
   function selectTab(p, i) {
+    if (i === 1 && GLOBAL.login_wall) { showLoginWall(); return; }       // ulasan terkunci: tab tidak berpindah
     var tabs = app.querySelectorAll('[role="tab"]');
     Array.prototype.forEach.call(tabs, function (t, k) { t.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
     var body = document.getElementById('tabbody');
@@ -246,7 +273,7 @@
     function nearBottom() { return scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 300; }
 
     function maybeLoad(trigger) {
-      if (S.loading || S.loaded >= S.order.length) return;
+      if (S.blocked || S.loading || S.loaded >= S.order.length) return;
       if (!nearBottom()) return;
       if (mk.needs_wheel && trigger !== 'wheel') return;
       if (mk.hard_stall_at != null && S.loaded >= mk.hard_stall_at) return;
@@ -256,6 +283,7 @@
       setTimeout(function () {
         appendBatch(10);
         S.loading = false; spinner.style.display = 'none'; S.jiggleArmed = false; S.reqs++;
+        if (mk.login_wall_after_reqs != null && S.reqs >= mk.login_wall_after_reqs) { S.blocked = true; showLoginWall(); }
         if (mk.captcha_after_reqs != null && S.reqs >= mk.captcha_after_reqs) {
           location.href = '/sorry/index?continue=' + encodeURIComponent(location.href);
         }

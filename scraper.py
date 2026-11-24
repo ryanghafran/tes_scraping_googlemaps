@@ -7,13 +7,15 @@
   Cara pakai:
     1. pip install -r requirements.txt       (Google Chrome harus terpasang)
     2. Isi 'daftar_coffeeshop.csv' (kolom: nama_tempat)
-    3. python scraper.py
+    3. python scraper.py --login             (SEKALI SAJA: Google mewajibkan login untuk membuka ulasan lengkap)
+    4. python scraper.py
 
   Satu kali jalan sudah cukup untuk 4000-5000 ulasan. Jika berhenti di tengah jalan
   (Ctrl+C, listrik mati, CAPTCHA, internet putus) cukup jalankan lagi: progres tersimpan
   dan duplikat tidak akan masuk.
 
   Opsi berguna (lengkap: python scraper.py --help):
+    python scraper.py --login                 login Google di profil scraper (wajib sekali; pakai akun khusus)
     python scraper.py --cek-status            cek cafe mana yang tutup lalu berhenti
     python scraper.py --target 4000           ubah target total ulasan
     python scraper.py --batas-sesi 200 --istirahat 15   mode hati-hati (istirahat otomatis)
@@ -40,7 +42,7 @@ import time
 from dataclasses import dataclass
 
 import konfigurasi as cfg
-from gmaps import TabUlasanGagal, TempatTidakDitemukan, ambil_ulasan_tempat, resolve_tempat
+from gmaps import TabUlasanGagal, TempatTidakDitemukan, ambil_ulasan_tempat, resolve_tempat, status_login
 from penyimpanan import (
     PenyimpananUlasan,
     StatusTempat,
@@ -50,7 +52,15 @@ from penyimpanan import (
     norm,
     pangkas_daftar_input,
 )
-from peramban import DiblokirGoogleError, Peramban, ringkas_error, sesi_mati
+from peramban import (
+    PESAN_LOGIN,
+    DiblokirGoogleError,
+    LoginDiperlukanError,
+    Peramban,
+    login_manual,
+    ringkas_error,
+    sesi_mati,
+)
 
 log = logging.getLogger("scraper")
 
@@ -105,7 +115,7 @@ def dengan_pemulihan(pb: Peramban, fungsi, *args, nama: str = ""):
     for percobaan in range(1, cfg.MAKS_PERCOBAAN_TEMPAT + 1):
         try:
             return fungsi(*args)
-        except (DiblokirGoogleError, TempatTidakDitemukan, KeyboardInterrupt):
+        except (DiblokirGoogleError, LoginDiperlukanError, TempatTidakDitemukan, KeyboardInterrupt):
             raise
         except Exception as e:
             terakhir = e
@@ -160,7 +170,7 @@ def tahap_resolve(pb: Peramban, daftar: list[str], status: StatusTempat):
             gagal_beruntun += 1
             rem_darurat()
             continue
-        except (DiblokirGoogleError, KeyboardInterrupt):
+        except (DiblokirGoogleError, LoginDiperlukanError, KeyboardInterrupt):
             raise
         except Exception as e:
             status.catat(nama, error_terakhir=ringkas_error(e))
@@ -308,7 +318,7 @@ def tahap_ulasan(pb: Peramban, daftar: list[str], status: StatusTempat, store: P
                     else:
                         pb.simpan_debug(f"kosong_{nama}")
                         raise TabUlasanGagal("daftar ulasan kosong (0 kartu termuat)")
-            except (DiblokirGoogleError, KeyboardInterrupt):
+            except (DiblokirGoogleError, LoginDiperlukanError, KeyboardInterrupt):
                 raise
             except Exception as e:
                 gagal_beruntun += 1
@@ -378,6 +388,77 @@ def ringkasan_teks(daftar: list[str], status: StatusTempat, store: PenyimpananUl
     return "\n".join(baris)
 
 
+# ─── Login Google ─────────────────────────────────────────────────────────────
+
+def cek_login_awal(pb: Peramban):
+    """
+    Peringatan dini (tidak menghentikan program): apakah Chrome scraper sudah login ke Google?
+    Tanpa login Google hanya menampilkan ±3-5 ulasan preview per tempat.
+    """
+    def baca():
+        pb.buka(f"{cfg.MAPS_BASE}?hl={cfg.BAHASA}")
+        pb.tidur(2.0, 3.0)
+        return status_login(pb)
+
+    try:
+        st = dengan_pemulihan(pb, baca, nama="cek_login")
+    except (DiblokirGoogleError, LoginDiperlukanError, KeyboardInterrupt):
+        raise
+    except Exception as e:
+        log.info(f"Status login tidak bisa diperiksa ({ringkas_error(e, 100)}); dilanjutkan.")
+        return
+    if st == "masuk":
+        log.info("Login Google terdeteksi pada profil scraper.")
+    elif st == "keluar":
+        print("\n" + "!" * 66)
+        print("  PERINGATAN: Chrome scraper BELUM login ke Google.")
+        print("  Tanpa login, Google biasanya hanya menampilkan ±3-5 ulasan per tempat")
+        print("  dan meminta login saat 'Ulasan lainnya' dibuka.")
+        print("  Disarankan berhenti sekarang lalu jalankan:  python scraper.py --login")
+        print("!" * 66 + "\n")
+        log.warning("Chrome scraper belum login ke Google; ulasan lengkap kemungkinan tidak bisa dibuka")
+        if sys.stdin is not None and sys.stdin.isatty():           # terminal interaktif: jangan buang waktu diam-diam
+            jawab = input("  Tetap lanjut tanpa login? [y/N] ").strip().lower()
+            if jawab not in ("y", "ya"):
+                raise LoginDiperlukanError(PESAN_LOGIN)
+    else:
+        log.info("Status login Google tidak bisa dipastikan; dilanjutkan (dinding login akan dideteksi saat ulasan dibuka).")
+
+
+def verifikasi_login() -> int:
+    """Membuka Chrome scraper sebentar untuk memeriksa apakah login tersimpan. Returns kode keluar."""
+    pb = Peramban(headless=False)
+    try:
+        pb.mulai()
+        pb.buka(f"{cfg.MAPS_BASE}?hl={cfg.BAHASA}")
+        pb.tidur(2.5, 3.5)
+        st = status_login(pb)
+    except Exception as e:
+        print(f"\nTidak bisa memeriksa status login: {ringkas_error(e)}")
+        return 1
+    finally:
+        pb.tutup()
+    if st == "masuk":
+        print("\nLogin Google terdeteksi dan tersimpan di profil scraper. Sekarang jalankan:  python scraper.py")
+        return 0
+    if st == "keluar":
+        print("\nLogin BELUM terdeteksi di profil scraper. Ulangi  python scraper.py --login  dan pastikan Anda "
+              "benar-benar login (avatar akun tampil di pojok kanan atas Google Maps) sebelum menutup Chrome.\n"
+              "Jika Anda yakin sudah login (deteksi otomatis ini hanya perkiraan), uji langsung:  "
+              "python scraper.py --hanya \"Two Cents\" --target 30")
+        return 1
+    print("\nStatus login tidak bisa dipastikan otomatis. Coba uji langsung:  "
+          "python scraper.py --hanya \"Two Cents\" --target 30")
+    return 0
+
+
+def jalankan_login() -> int:
+    if not login_manual():
+        return 1
+    print("\nMemeriksa status login (Chrome akan terbuka sebentar)...")
+    return verifikasi_login()
+
+
 # ─── Program utama ────────────────────────────────────────────────────────────
 
 def buat_parser() -> argparse.ArgumentParser:
@@ -387,6 +468,8 @@ def buat_parser() -> argparse.ArgumentParser:
     p.add_argument("--urutan", nargs="+", choices=["relevan", "terbaru", "tertinggi", "terendah"],
                    help="urutan ulasan yang diambil, mis. --urutan terbaru terendah")
     p.add_argument("--headless", action="store_true", help="jalankan Chrome tanpa jendela (CAPTCHA tidak bisa diselesaikan manual)")
+    p.add_argument("--login", action="store_true",
+                   help="login ke Google di profil scraper (WAJIB sekali: tanpa login Google tidak membuka ulasan lengkap)")
     p.add_argument("--cek-status", action="store_true", help="hanya cek status buka/tutup tiap tempat lalu berhenti")
     p.add_argument("--ekspor", action="store_true", help="hanya buat ulang hasil_ulasan.csv dari data master")
     p.add_argument("--ringkasan", action="store_true", help="tampilkan ringkasan status lalu berhenti")
@@ -414,6 +497,8 @@ def terapkan_opsi(o: argparse.Namespace):
 def jalankan(o: argparse.Namespace) -> int:
     siapkan_logging()
     terapkan_opsi(o)
+    if o.login:
+        return jalankan_login()
     garis("GOOGLE MAPS REVIEW SCRAPER - Coffee Shop Bandung", "=")
 
     try:
@@ -470,6 +555,8 @@ def jalankan(o: argparse.Namespace) -> int:
     kode = 0
     try:
         pb.mulai()
+        if not o.cek_status and hitung_total(daftar, status, store, terbatas) < cfg.TARGET_TOTAL_ULASAN:
+            cek_login_awal(pb)                       # peringatan dini: jangan menunggu Tahap 1 selesai baru tahu belum login
         if butuh_resolve:
             tahap_resolve(pb, daftar, status)
             daftar = pangkas_tutup(daftar, status)
@@ -489,6 +576,10 @@ def jalankan(o: argparse.Namespace) -> int:
     except KeyboardInterrupt:
         log.warning("Dihentikan pengguna (Ctrl+C). Progres tersimpan; jalankan lagi untuk melanjutkan.")
         kode = 130
+    except LoginDiperlukanError as e:
+        log.error(f"BERHENTI: {e}")
+        print(f"\n[BERHENTI] {e}")
+        kode = 3
     except (DiblokirGoogleError, BerhentiError) as e:
         log.error(f"BERHENTI: {e}")
         print(f"\n[BERHENTI] {e}")
