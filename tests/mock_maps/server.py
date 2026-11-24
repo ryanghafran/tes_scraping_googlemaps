@@ -77,6 +77,9 @@ class MockMaps:
             p = {
                 "name": nama, "fid": f"0x2e68e{n:04x}:0x{(n + 1) * 7919:x}",
                 "address": spec.get("address", f"Jl. Contoh No.{n + 1}, Kota Bandung, Jawa Barat 4011{n}"),
+                "place_id": spec.get("place_id", f"ChIJmock{n:04d}"),
+                "lat": spec.get("lat", round(-6.9 - n * 0.002, 6)), "lng": spec.get("lng", round(107.6 + n * 0.002, 6)),
+                "id_menuju": spec.get("id_menuju", ""),     # place_id/cid tempat ini 'salah arah' ke tempat lain (nama)
                 "category": spec.get("category", "Kafe"), "status": spec.get("status", "open"),
                 "closed_now": spec.get("closed_now", False),
                 "rating": spec.get("rating", 4.5), "total": total, "mock": mock,
@@ -84,6 +87,9 @@ class MockMaps:
                                        pakai_balasan=(mock.get("variant", "A") == "A" or spec.get("balasan_di_b", False)),
                                        long_ratio=spec.get("long_ratio", 0.3)),
             }
+            if "fid" in spec:
+                p["fid"] = spec["fid"]
+            p["cid"] = str(int(p["fid"].split(":")[1], 16))
             self.places.append(p)
         self._port = port
         self._httpd = None

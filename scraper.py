@@ -43,11 +43,21 @@ import time
 from dataclasses import dataclass
 
 import konfigurasi as cfg
-from gmaps import TabUlasanGagal, TempatTidakDitemukan, ambil_ulasan_tempat, resolve_tempat, status_login
+from audit import audit_master, teks_audit
+from gmaps import (
+    CabangSalahError,
+    TabUlasanGagal,
+    TempatTidakDitemukan,
+    ambil_ulasan_tempat,
+    cocok_cabang,
+    resolve_tempat,
+    status_login,
+)
 from penyimpanan import (
     PenyimpananUlasan,
     StatusTempat,
     baca_daftar_input,
+    baca_referensi,
     catat_gagal,
     catat_tutup,
     norm,
@@ -148,8 +158,33 @@ def _cari_duplikat(status: StatusTempat, daftar: list[str], nama: str, info: dic
     return ""
 
 
-def tahap_resolve(pb: Peramban, daftar: list[str], status: StatusTempat):
-    belum = [n for n in daftar if not status.ambil(n)["url"]]
+def perlu_resolve(s: dict) -> bool:
+    """Tempat yang belum pernah dibuka di Maps (dan belum ditandai 'salah cabang', yang butuh --reset-gagal)."""
+    return not s["url"] and s["status_scrape"] != "salah_cabang"
+
+
+def selaraskan_status(daftar: list[str], status: StatusTempat, referensi: dict[str, dict]) -> list[str]:
+    """
+    Status lama yang tempatnya TIDAK sesuai cabang di daftar Wanderlog direset (tanpa browser), supaya
+    dicek ulang lewat place ID. Returns nama yang direset.
+    """
+    direset = []
+    for n in daftar:
+        ref, s = referensi.get(norm(n)), status.ambil(n)
+        if not ref or not s["url"]:
+            continue
+        ok, alasan = cocok_cabang(s["id_tempat"], s["url"], s["alamat"], ref)
+        if not ok:
+            kosong = {k: v for k, v in StatusTempat.DEFAULT.items() if k != "nama_input"}
+            status.catat(n, **kosong)
+            direset.append(n)
+            log.warning(f"Status lama '{n}' = cabang lain ({alasan}); direset untuk dicek ulang")
+    return direset
+
+
+def tahap_resolve(pb: Peramban, daftar: list[str], status: StatusTempat, referensi: dict[str, dict] | None = None):
+    referensi = referensi or {}
+    belum = [n for n in daftar if perlu_resolve(status.ambil(n))]
     if not belum:
         return
     garis(f"TAHAP 1: mengecek {len(belum)} tempat di Google Maps (status buka/tutup, jumlah ulasan)", "=")
@@ -165,9 +200,10 @@ def tahap_resolve(pb: Peramban, daftar: list[str], status: StatusTempat):
         print(f"[{i}/{len(belum)}] {nama}")
         log.info(f"[{i}/{len(belum)}] Cek tempat: {nama}")
         try:
-            info = dengan_pemulihan(pb, resolve_tempat, pb, nama, nama=nama)
+            info = dengan_pemulihan(pb, resolve_tempat, pb, nama, referensi.get(norm(nama)), nama=nama)
         except TempatTidakDitemukan as e:
-            status.catat(nama, status_scrape="tidak_ditemukan", error_terakhir=str(e))
+            salah = isinstance(e, CabangSalahError)
+            status.catat(nama, status_scrape="salah_cabang" if salah else "tidak_ditemukan", error_terakhir=str(e))
             catat_gagal(nama, str(e))
             log.warning(f"  Tidak ditemukan: {e}")
             gagal_beruntun += 1
@@ -189,6 +225,12 @@ def tahap_resolve(pb: Peramban, daftar: list[str], status: StatusTempat):
                          total_ulasan=info["total_ulasan"], status_buka=info["status_buka"],
                          error_terakhir="")
         dup = _cari_duplikat(status, daftar, nama, info)
+        for lain in daftar:                       # dua cabang ber-nama-Google sama akan tercampur di master (kunci = nama)
+            sl = status.ambil(lain)
+            if lain != nama and sl["nama_resmi"] and norm(sl["nama_resmi"]) == norm(info["nama_resmi"]) \
+                    and sl["id_tempat"] and sl["id_tempat"] != info["id_tempat"]:
+                log.warning(f"  PERHATIAN: '{lain}' dan '{nama}' sama-sama bernama '{info['nama_resmi']}' di Google Maps "
+                            "tetapi cabangnya berbeda; ulasannya akan tercampur di data master.")
         if dup:
             perubahan.update(status_scrape="duplikat", duplikat_dari=dup)
             log.warning(f"  '{nama}' ternyata tempat yang sama dengan '{dup}' -> dilewati")
@@ -226,7 +268,7 @@ def pangkas_tutup(daftar: list[str], status: StatusTempat) -> list[str]:
 def layak_scrape(s: dict) -> bool:
     return bool(
         s["url"] and s["status_buka"] == "aktif"
-        and s["status_scrape"] not in ("duplikat", "tidak_ditemukan", "bukan_cafe")
+        and s["status_scrape"] not in ("duplikat", "tidak_ditemukan", "bukan_cafe", "salah_cabang")
         and not s["habis"] and s["percobaan_gagal"] < cfg.MAKS_GAGAL_TOTAL
     )
 
@@ -483,6 +525,30 @@ def jalankan_login() -> int:
 
 # ─── Program utama ────────────────────────────────────────────────────────────
 
+def jalankan_audit(store: PenyimpananUlasan, status: StatusTempat, referensi: dict[str, dict], terapkan: bool) -> int:
+    """--audit: laporkan (dan dengan --terapkan: buang) ulasan dari cabang yang tidak ada di daftar Wanderlog."""
+    if not referensi:
+        print("Daftar input belum punya identitas cabang (kolom place_id/fid/lat/lng/alamat).\n"
+              "Buat dulu dengan:  python wanderlog.py")
+        return 1
+    from audit import cocokkan
+    hasil = audit_master(store.rekaman, referensi)
+    print(teks_audit(hasil))
+    if not hasil["salah"]:
+        print("\nSemua ulasan di data master sudah sesuai cabang di daftar.")
+        return 0
+    if not terapkan:
+        print(f"\nBelum ada yang diubah. Untuk membuang {hasil['salah']} ulasan cabang salah:\n"
+              "    python scraper.py --audit --terapkan")
+        return 0
+    dibuang, cadangan = store.hapus_jika(lambda r: not cocokkan(r, referensi))
+    print(f"\n{dibuang} ulasan cabang salah DIBUANG dari data master. Cadangan master lama: {cadangan}")
+    print("Berikutnya: python scraper.py   (mengambil cabang yang benar & yang belum ada)")
+    path = store.ekspor_csv()
+    print(f"hasil_ulasan.csv dibuat ulang: {path}")
+    return 0
+
+
 def buat_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Scraper ulasan Google Maps untuk coffee shop (skripsi analisis sentimen).")
     p.add_argument("--target", type=int, help=f"target total ulasan (default {cfg.TARGET_TOTAL_ULASAN})")
@@ -494,6 +560,10 @@ def buat_parser() -> argparse.ArgumentParser:
                    help="login ke Google di profil scraper (WAJIB sekali: tanpa login Google tidak membuka ulasan lengkap)")
     p.add_argument("--diagnosa", action="store_true",
                    help="periksa kenapa Chrome tidak bisa dibuka (profil terkunci, versi tidak cocok, dll.)")
+    p.add_argument("--audit", action="store_true",
+                   help="periksa data master terhadap daftar Wanderlog: ulasan mana yang dari cabang salah")
+    p.add_argument("--terapkan", action="store_true",
+                   help="dengan --audit: BUANG ulasan cabang salah dari data master (cadangan dibuat otomatis)")
     p.add_argument("--cek-status", action="store_true", help="hanya cek status buka/tutup tiap tempat lalu berhenti")
     p.add_argument("--ekspor", action="store_true", help="hanya buat ulang hasil_ulasan.csv dari data master")
     p.add_argument("--ringkasan", action="store_true", help="tampilkan ringkasan status lalu berhenti")
@@ -544,10 +614,19 @@ def jalankan(o: argparse.Namespace) -> int:
         dibaca, baru, rusak = store.impor_csv(berkas)
         log.info(f"Impor '{berkas}': {dibaca} baris, {baru} baru, {rusak} rusak dilewati")
     status = StatusTempat()
+    referensi = baca_referensi()
+    if o.audit:
+        return jalankan_audit(store, status, referensi, o.terapkan)
+    if referensi:
+        selaraskan_status(daftar, status, referensi)
+        hasil = audit_master(store.rekaman, referensi)
+        if hasil["salah"]:
+            print(f"\n[PERHATIAN] {hasil['salah']} ulasan di data master berasal dari cabang yang TIDAK ada di daftar "
+                  "Wanderlog.\n            Lihat: python scraper.py --audit   |   buang: python scraper.py --audit --terapkan\n")
     if o.reset_gagal:
         for n in daftar:
             s = status.ambil(n)
-            if s["status_scrape"] in ("gagal", "tidak_ditemukan") or s["percobaan_gagal"]:
+            if s["status_scrape"] in ("gagal", "tidak_ditemukan", "salah_cabang") or s["percobaan_gagal"]:
                 status.catat(n, status_scrape="belum", percobaan_gagal=0, error_terakhir="", macet_di=None)
 
     def selesai(kode: int = 0) -> int:
@@ -569,7 +648,7 @@ def jalankan(o: argparse.Namespace) -> int:
             layak_scrape(status.ambil(n))
             and store.jumlah_tempat(status.ambil(n)["nama_resmi"]) < cfg.MAKS_ULASAN_PER_TEMPAT for n in daftar)
 
-    butuh_resolve = any(not status.ambil(n)["url"] for n in daftar)
+    butuh_resolve = any(perlu_resolve(status.ambil(n)) for n in daftar)
     if not butuh_resolve and (o.cek_status or not perlu_ulasan()):
         log.info("Tidak ada yang perlu dikerjakan: semua tempat sudah dicek dan "
                  "target tercapai / tidak ada tempat yang bisa menambah ulasan.")
@@ -583,7 +662,7 @@ def jalankan(o: argparse.Namespace) -> int:
         if not o.cek_status and hitung_total(daftar, status, store, terbatas) < cfg.TARGET_TOTAL_ULASAN:
             cek_login_awal(pb)                       # peringatan dini: jangan menunggu Tahap 1 selesai baru tahu belum login
         if butuh_resolve:
-            tahap_resolve(pb, daftar, status)
+            tahap_resolve(pb, daftar, status, referensi)
             daftar = pangkas_tutup(daftar, status)
         aktif = [n for n in daftar if layak_scrape(status.ambil(n))]
         kapasitas = sum(status.ambil(n)["total_ulasan"] or 0 for n in aktif)

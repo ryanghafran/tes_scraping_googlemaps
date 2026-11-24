@@ -42,7 +42,8 @@ menawarkan mematikannya. Sesi login tersimpan di profil itu dan dipakai ulang pa
 
 Yang terjadi saat `python scraper.py`:
 
-1. **Tahap 1 — cek tempat.** Tiap nama di `daftar_coffeeshop.csv` dicari di Google Maps. Nama resmi, alamat, jumlah
+1. **Tahap 1 — cek tempat.** Tiap tempat di `daftar_coffeeshop.csv` dibuka di Google Maps **lewat place ID
+   cabang yang persis** (lihat bagian *Daftar tempat & cabang persis* di bawah), lalu cabangnya diverifikasi. Nama resmi, alamat, jumlah
    ulasan, dan **status buka/tutup** dibaca. Cafe berstatus **Tutup permanen** atau **Tutup sementara** otomatis
    **dibuang dari daftar** (salinan asli disimpan di `daftar_coffeeshop_sebelum_dipangkas.csv`, daftar yang dibuang
    dicatat di `daftar_coffeeshop_tutup.csv`).
@@ -104,7 +105,9 @@ tes_scraping_googlemaps/
 ├── gmaps.py               # Logika khusus Google Maps: cari tempat, tab Ulasan, scroll, panen kartu
 ├── peramban.py            # Chrome/Selenium: pemulihan saat browser mati, deteksi CAPTCHA, login Google
 ├── penyimpanan.py         # Data master, anti-duplikat, ekspor CSV, impor CSV lama
-├── daftar_coffeeshop.csv  # INPUT: daftar nama coffee shop (kolom 'nama_tempat')
+├── wanderlog.py           # Membuat daftar_coffeeshop.csv dari blog Wanderlog (place ID, koordinat, kategori)
+├── audit.py               # Audit data master vs daftar: ulasan cabang salah (python scraper.py --audit)
+├── daftar_coffeeshop.csv  # INPUT: daftar tempat (dibuat wanderlog.py; hanya 'nama_tempat' yang wajib)
 ├── requirements.txt
 │
 ├── hasil_ulasan.csv       # OUTPUT akhir (dibuat ulang otomatis, aman dibuka di Excel)
@@ -207,8 +210,8 @@ Hasilnya bisa dimasukkan dengan `python scraper.py --impor hasil.csv` (kolom har
 tempat sehingga tidak cukup untuk target ini.
 
 **Salah memilih tempat / cabang?**
-Nama resmi yang terpilih tampil di log dan di kolom `nama_tempat`. Jika berbeda dari yang dimaksud, tulis nama di
-`daftar_coffeeshop.csv` lebih spesifik (mis. tambahkan nama jalan).
+Lihat bagian berikut. Ringkasnya: pakai `daftar_coffeeshop.csv` buatan `wanderlog.py` (berisi place ID), dan jalankan
+`python scraper.py --audit` untuk memeriksa data yang sudah ada.
 
 **Muncul "PERINGATAN KUALITAS DATA"?**
 Artinya lebih dari 20% ulasan yang baru dipanen tidak punya rating / tanggal / nama reviewer, atau teksnya masih
@@ -220,11 +223,38 @@ folder itu agar bacaannya bisa diperbaiki. Hentikan dulu bila Anda tidak ingin d
 Folder `debug/` berisi screenshot + HTML saat terjadi masalah (tab Ulasan gagal dibuka, daftar kosong, macet, CAPTCHA).
 Sertakan folder itu beserta `scraper_run.log` saat meminta bantuan.
 
-**Mulai dari nol?** Hapus folder `data/` (data master + status). Data lama di `hasil_ulasan*.csv` akan diimpor ulang.
+**Mulai dari nol?** Hapus folder `data/` (data master + status). Data lama di `hasil_ulasan*.csv` akan diimpor ulang
+(termasuk ulasan cabang yang salah bila ada; jalankan `python scraper.py --audit --terapkan` sesudahnya).
 
 **Chrome tidak ditemukan / chromedriver gagal diunduh?**
 Atur variabel lingkungan `CHROME_BINARY` (path `chrome.exe`) dan/atau `CHROMEDRIVER_PATH` (path chromedriver yang
 versinya sama dengan Chrome Anda).
+
+## Daftar tempat & cabang persis (Wanderlog)
+
+Daftar tempat mengikuti blog Wanderlog (`URL_WANDERLOG` di `konfigurasi.py`). Mencari lewat **nama** saja berbahaya:
+banyak cafe punya beberapa cabang bernama mirip, dan Google Maps bisa membuka cabang yang salah (contoh nyata:
+*Wheels Coffee Roasters* terambil cabang Jl. Ir. H. Juanda, padahal di Wanderlog cabangnya Jl. L.L.R.E. Martadinata).
+
+```bash
+python wanderlog.py            # unduh daftar Wanderlog -> tulis daftar_coffeeshop.csv (daftar lama dicadangkan)
+python scraper.py --audit      # bandingkan data master dengan daftar: mana yang cabang salah? (tidak mengubah apa pun)
+python scraper.py --audit --terapkan   # buang ulasan cabang salah dari master (cadangan master dibuat otomatis)
+python scraper.py              # ambil cabang yang benar + tempat yang belum ada
+```
+
+- `wanderlog.py` membaca tiap halaman tempat Wanderlog: **Google place ID, koordinat, alamat, kategori**. Aturan
+  kategori: hanya yang mengandung *cafe / coffee shop* (termasuk kopi/espresso). Restoran **saja** dibuang (dicatat di
+  `daftar_dibuang_wanderlog.csv`); restoran yang juga cafe/coffee shop tetap diambil.
+- Place ID (`ChIJ…`) adalah penyandian ID internal Maps, jadi cabang dicocokkan **persis** (bukan menebak lewat nama).
+  Scraper membuka tempat lewat place ID → `cid` → pencarian nama+alamat, lalu **memverifikasi**: ID sama, atau
+  koordinat ≤ `JARAK_MAKS_CABANG_METER` (150 m) dari koordinat Wanderlog, atau jalan+nomor alamat sama. Jika hanya cabang
+  lain yang bisa dibuka, tempat ditandai `salah_cabang` dan **tidak di-scrape** (cek `log_gagal.txt`; ulangi dengan
+  `--reset-gagal`).
+- Status tempat lama yang cabangnya tidak sesuai daftar direset otomatis dan dicek ulang.
+- `--audit` mencocokkan tiap ulasan: lewat `id_tempat` bila ada, atau (ulasan lama) lewat jalan+nomor di kolom `lokasi`.
+  Jangan `--impor` ulang CSV lama yang berisi cabang salah; kalau terlanjur, jalankan `--audit --terapkan` lagi.
+- Bila halaman Wanderlog berubah dan `wanderlog.py` tidak bisa membaca, daftar lama **tidak ditimpa**.
 
 **Catatan etika:** nama reviewer adalah data pribadi. Untuk dataset yang dipublikasikan, pertimbangkan membuang
 kolom `nama_reviewer` setelah pengumpulan selesai.

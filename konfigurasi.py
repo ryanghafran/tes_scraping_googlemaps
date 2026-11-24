@@ -26,6 +26,10 @@ OUTPUT_CSV    = _p("hasil_ulasan.csv")         # OUTPUT utama (dibuat ulang otom
 CSV_SEPARATOR = ";"                            # ';' = langsung rapi di Excel Indonesia. Ganti ',' bila perlu.
 FILE_TUTUP    = _p("daftar_coffeeshop_tutup.csv")  # Cafe tutup permanen/sementara yang dibuang dari daftar
 
+# Sumber daftar tempat (blog Wanderlog). `python wanderlog.py` membuat INPUT_CSV dari sini,
+# lengkap dengan Google place ID, koordinat & alamat tiap cabang.
+URL_WANDERLOG = "https://wanderlog.com/list/geoCategory/16946"
+
 DIR_DATA      = _p("data")
 FILE_MASTER   = _p("data", "ulasan_master.jsonl")  # SUMBER KEBENARAN semua ulasan (jangan diedit manual)
 FILE_STATUS   = _p("data", "status_tempat.json")   # Status & kemajuan tiap tempat (untuk resume)
@@ -58,6 +62,11 @@ URUTAN_ULASAN = ["terbaru"]
 LOKASI    = "Bandung"                         # Ditambahkan ke kata kunci pencarian
 BAHASA    = "id"                              # Bahasa antarmuka Google Maps (parameter hl=)
 MAPS_BASE = "https://www.google.com/maps"
+
+# Cabang persis: bila daftar input punya kolom place_id/fid, tempat dibuka lewat ID itu lalu DIVERIFIKASI
+# (ID hasil buka harus sama, atau koordinat <= JARAK_MAKS_CABANG_METER dari koordinat Wanderlog).
+# Jika tidak cocok, tempat TIDAK di-scrape (lebih baik kosong daripada salah cabang).
+JARAK_MAKS_CABANG_METER = 150
 
 # Filter kategori (opsional, default mati). Hanya dipakai jika kategori berhasil dibaca.
 FILTER_KATEGORI = False

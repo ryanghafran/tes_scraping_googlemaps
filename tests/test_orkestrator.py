@@ -295,7 +295,7 @@ def test_tahap_resolve_berhenti_dini_jika_banyak_tempat_berturut_turut_gagal_dic
     status = StatusTempat()
     dicoba = []
 
-    def tak_ketemu(pb, nama):
+    def tak_ketemu(pb, nama, ref=None):
         dicoba.append(nama)
         raise TempatTidakDitemukan("tidak terbuka")
 
@@ -311,7 +311,7 @@ def test_tahap_resolve_keberhasilan_mereset_hitungan_gagal_dan_mendeteksi_duplik
     daftar = ["A", "B", "A2", "C"]
     status = StatusTempat()
 
-    def fake(pb, nama):
+    def fake(pb, nama, ref=None):
         if nama == "B":
             raise TempatTidakDitemukan("x")
         resmi = {"A": "Kopi A", "A2": "Kopi A", "C": "Kopi C"}[nama]          # A2 resolve ke tempat yang sama dengan A

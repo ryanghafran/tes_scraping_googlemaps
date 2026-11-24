@@ -32,6 +32,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 import konfigurasi as cfg
+from wanderlog import cid_dari_fid, kunci_alamat
 from peramban import PESAN_LOGIN, LoginDiperlukanError, Peramban, sesi_mati
 
 log = logging.getLogger(__name__)
@@ -458,6 +459,41 @@ def id_tempat_dari_url(url: str) -> str:
     return m.group(1) if m else ""
 
 
+def koordinat_dari_url(url: str):
+    """(lat, lng) tempat dari URL Maps: pakai '!3d<lat>!4d<lng>' (koordinat tempat), cadangan '@lat,lng'."""
+    m = re.search(r"!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)", url or "") or re.search(r"@(-?\d+\.\d+),(-?\d+\.\d+)", url or "")
+    return (float(m.group(1)), float(m.group(2))) if m else None
+
+
+def jarak_meter(a, b) -> float:
+    """Jarak garis lurus dua titik (lat, lng) dalam meter (haversine)."""
+    (la1, lo1), (la2, lo2) = a, b
+    p1, p2 = math.radians(la1), math.radians(la2)
+    h = math.sin((p2 - p1) / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(math.radians(lo2 - lo1) / 2) ** 2
+    return 2 * 6371000 * math.asin(math.sqrt(h))
+
+
+def cocok_cabang(id_tempat: str, url: str, alamat: str, ref: dict) -> tuple[bool, str]:
+    """
+    Apakah halaman yang terbuka benar-benar cabang yang diminta (ref dari daftar Wanderlog)?
+    Cocok jika: ID internal Maps sama persis; ATAU koordinat <= cfg.JARAK_MAKS_CABANG_METER dari koordinat
+    ref; ATAU jalan + nomor di alamat sama. Returns (cocok, alasan_bila_tidak).
+    """
+    if ref.get("fid") and id_tempat and id_tempat == ref["fid"]:
+        return True, ""
+    titik = koordinat_dari_url(url)
+    if titik and ref.get("lat") is not None:
+        d = jarak_meter(titik, (ref["lat"], ref["lng"]))
+        if d <= cfg.JARAK_MAKS_CABANG_METER:
+            return True, ""
+        jarak_txt = f"{d:.0f} m dari lokasi yang diminta"
+    else:
+        jarak_txt = "koordinat tidak terbaca"
+    if ref.get("alamat") and alamat and kunci_alamat(alamat) == kunci_alamat(ref["alamat"]) and kunci_alamat(alamat)[0]:
+        return True, ""
+    return False, f"cabang berbeda (ID {id_tempat or '-'}, {jarak_txt}, alamat '{alamat[:50]}')"
+
+
 def bersihkan_tanggal(t: str) -> str:
     return re.sub(r"^(diedit|edited)\s+", "", (t or "").strip(), flags=re.I)
 
@@ -524,36 +560,12 @@ def _tunggu_keadaan(pb: Peramban, timeout: float = 18):
     return "timeout", terakhir
 
 
-def resolve_tempat(pb: Peramban, nama_input: str) -> dict:
-    """
-    Mencari tempat di Google Maps dan membaca detailnya.
-    Returns dict: nama_resmi, alamat, kategori, url, id_tempat, rating, total_ulasan,
-                  status_buka ('aktif'|'tutup_permanen'|'tutup_sementara'), kemiripan.
-    Raises TempatTidakDitemukan.
-    """
-    pb.buka(url_pencarian(nama_input))
-    keadaan, _ = _tunggu_keadaan(pb)
-    kemiripan = None
+class CabangSalahError(TempatTidakDitemukan):
+    """Google Maps hanya mau membuka cabang lain, bukan cabang yang diminta. Tempat TIDAK boleh di-scrape."""
 
-    if keadaan == "daftar":
-        kandidat = pb.js(JS_KANDIDAT_HASIL)
-        skor = [(skor_kemiripan(nama_input, k["nama"]), -i, k) for i, k in enumerate(kandidat)]
-        skor.sort(reverse=True, key=lambda x: (x[0], x[1]))
-        kemiripan, _, pilih = skor[0]
-        log.info(f"  Daftar hasil ({len(kandidat)}): memilih '{pilih['nama']}' (kemiripan {kemiripan:.2f})")
-        if kemiripan < 0.5:
-            log.warning(f"  PERHATIAN: nama hasil kurang mirip dengan '{nama_input}'. Periksa manual di status_tempat.json")
-        pb.buka(pilih["href"])
-        keadaan, _ = _tunggu_keadaan(pb)
-    elif keadaan == "tempat":
-        log.info("  Google Maps langsung membuka halaman tempat (direct match)")
 
-    if keadaan == "kosong":
-        raise TempatTidakDitemukan(f"Google Maps tidak menemukan '{nama_input}'")
-    if keadaan != "tempat":
-        pb.simpan_debug(f"resolve_{nama_input}")
-        raise TempatTidakDitemukan(f"Halaman tempat '{nama_input}' tidak terbuka (keadaan: {keadaan})")
-
+def _baca_info_tempat(pb: Peramban, nama_input: str, kemiripan=None) -> dict:
+    """Membaca detail halaman tempat yang sedang terbuka (nama, alamat, rating, status, ID)."""
     # Panel detail kadang selesai dirender beberapa saat setelah <h1> muncul.
     detail = None
     for _ in range(10):
@@ -578,6 +590,101 @@ def resolve_tempat(pb: Peramban, nama_input: str) -> dict:
     log.info(f"  Tempat: {info['nama_resmi']} | {info['kategori'] or '-'} | rating {rating} | "
              f"{info['total_ulasan']} ulasan | status: {info['status_buka']}")
     return info
+
+
+def _url_id_tempat(ref: dict) -> list[str]:
+    """URL pembuka tempat lewat identitas persis (urut dari yang paling andal)."""
+    urls = []
+    if ref.get("place_id"):
+        urls.append(f"{cfg.MAPS_BASE}/place/?q=place_id:{ref['place_id']}&hl={cfg.BAHASA}")
+    cid = cid_dari_fid(ref.get("fid", ""))
+    if cid:
+        urls.append(f"{cfg.MAPS_BASE}?cid={cid}&hl={cfg.BAHASA}")
+    return urls
+
+
+def _kandidat_cocok(kandidat: list[dict], ref: dict) -> str:
+    """href kandidat daftar hasil yang ID/koordinatnya cocok dengan ref ('' bila tidak ada)."""
+    for k in kandidat:
+        ok, _ = cocok_cabang(id_tempat_dari_url(k["href"]), k["href"], "", ref)
+        if ok:
+            return k["href"]
+    return ""
+
+
+def _resolve_cabang(pb: Peramban, nama_input: str, ref: dict) -> dict:
+    """
+    Membuka cabang PERSIS sesuai daftar (place ID -> cid -> pencarian nama+alamat) lalu memverifikasinya.
+    Jika semua jalur hanya menghasilkan cabang lain: raise CabangSalahError (tidak pernah diam-diam salah cabang).
+    """
+    gagal = []
+    jalur = [("place ID", u) for u in _url_id_tempat(ref)]
+    jalur.append(("pencarian nama+alamat",
+                  url_pencarian(f"{ref.get('nama') or nama_input} {(ref.get('alamat') or '').split(',')[0]}")))
+    for label, url in jalur:
+        pb.buka(url)
+        keadaan, _ = _tunggu_keadaan(pb)
+        if keadaan == "daftar":                       # hasil berupa daftar: ambil HANYA yang cocok cabangnya
+            href = _kandidat_cocok(pb.js(JS_KANDIDAT_HASIL), ref)
+            if href:
+                pb.buka(href)
+                keadaan, _ = _tunggu_keadaan(pb)
+        if keadaan != "tempat":
+            gagal.append(f"{label}: {keadaan}")
+            continue
+        info = _baca_info_tempat(pb, nama_input)
+        for _ in range(4):                            # URL kadang baru memuat ID tempat sesaat setelah panel tampil
+            if info["id_tempat"] or koordinat_dari_url(info["url"]) and "!3d" in info["url"]:
+                break
+            time.sleep(1.0)
+            info = _baca_info_tempat(pb, nama_input)
+        ok, alasan = cocok_cabang(info["id_tempat"], info["url"], info["alamat"], ref)
+        if ok:
+            log.info(f"  Cabang terverifikasi lewat {label}: {info['alamat'][:60]}")
+            return info
+        gagal.append(f"{label}: {alasan}")
+        log.warning(f"  {label} membuka cabang yang salah: {alasan}")
+    pb.simpan_debug(f"cabang_{nama_input}")
+    raise CabangSalahError(
+        f"Cabang '{nama_input}' ({(ref.get('alamat') or '')[:60]}) tidak ditemukan di Google Maps: " + "; ".join(gagal))
+
+
+def resolve_tempat(pb: Peramban, nama_input: str, ref: dict | None = None) -> dict:
+    """
+    Mencari tempat di Google Maps dan membaca detailnya.
+    Tanpa `ref`: mencari lewat nama. Dengan `ref` (place_id/fid/koordinat dari daftar Wanderlog): membuka
+    cabang persis dan memverifikasinya.
+    Returns dict: nama_resmi, alamat, kategori, url, id_tempat, rating, total_ulasan,
+                  status_buka ('aktif'|'tutup_permanen'|'tutup_sementara'), kemiripan.
+    Raises TempatTidakDitemukan (CabangSalahError bila hanya cabang lain yang bisa dibuka).
+    """
+    if ref and (ref.get("place_id") or ref.get("fid") or ref.get("lat") is not None):
+        return _resolve_cabang(pb, nama_input, ref)
+
+    pb.buka(url_pencarian(nama_input))
+    keadaan, _ = _tunggu_keadaan(pb)
+    kemiripan = None
+
+    if keadaan == "daftar":
+        kandidat = pb.js(JS_KANDIDAT_HASIL)
+        skor = [(skor_kemiripan(nama_input, k["nama"]), -i, k) for i, k in enumerate(kandidat)]
+        skor.sort(reverse=True, key=lambda x: (x[0], x[1]))
+        kemiripan, _, pilih = skor[0]
+        log.info(f"  Daftar hasil ({len(kandidat)}): memilih '{pilih['nama']}' (kemiripan {kemiripan:.2f})")
+        if kemiripan < 0.5:
+            log.warning(f"  PERHATIAN: nama hasil kurang mirip dengan '{nama_input}'. Periksa manual di status_tempat.json")
+        pb.buka(pilih["href"])
+        keadaan, _ = _tunggu_keadaan(pb)
+    elif keadaan == "tempat":
+        log.info("  Google Maps langsung membuka halaman tempat (direct match)")
+
+    if keadaan == "kosong":
+        raise TempatTidakDitemukan(f"Google Maps tidak menemukan '{nama_input}'")
+    if keadaan != "tempat":
+        pb.simpan_debug(f"resolve_{nama_input}")
+        raise TempatTidakDitemukan(f"Halaman tempat '{nama_input}' tidak terbuka (keadaan: {keadaan})")
+
+    return _baca_info_tempat(pb, nama_input, kemiripan)
 
 
 # ─── Membuka tab Ulasan & memilih urutan ──────────────────────────────────────

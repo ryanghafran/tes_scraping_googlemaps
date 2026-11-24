@@ -264,6 +264,31 @@ class PenyimpananUlasan:
     def per_tempat(self) -> Counter:
         return Counter({k: v for k, v in self._per_tempat.items()})
 
+    # -- pembersihan --------------------------------------------------------
+    def hapus_jika(self, predikat) -> tuple[int, str]:
+        """
+        Membuang ulasan yang memenuhi predikat(rekaman)->bool dari master. Berkas master lama disalin dulu
+        ke '<nama>.sebelum_purge_<waktu>.jsonl'. Master ditulis ulang secara atomik.
+        Returns (jumlah_dibuang, path_cadangan). Tidak melakukan apa pun bila tidak ada yang cocok.
+        """
+        sisa = [r for r in self.rekaman if not predikat(r)]
+        dibuang = len(self.rekaman) - len(sisa)
+        if not dibuang:
+            return 0, ""
+        self.tutup()
+        akar, ekst = os.path.splitext(self.path)
+        cadangan = f"{akar}.sebelum_purge_{datetime.now().strftime('%Y%m%d_%H%M%S')}{ekst}"
+        shutil.copy2(self.path, cadangan)
+        tmp = self.path + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            for r in sisa:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
+        os.replace(tmp, self.path)
+        self.rekaman, self._ids, self._kunci, self._per_tempat = [], set(), set(), Counter()
+        for r in sisa:
+            self._daftarkan(r)
+        return dibuang, cadangan
+
     # -- ekspor CSV ---------------------------------------------------------
     def ekspor_csv(self, path: str | None = None, urutan_tempat: list[str] | None = None) -> str:
         """
@@ -419,10 +444,42 @@ def baca_daftar_input(path: str | None = None) -> list[str]:
     return nama
 
 
+def baca_referensi(path: str | None = None) -> dict[str, dict]:
+    """
+    Identitas cabang tiap tempat dari kolom opsional di CSV input (dibuat oleh wanderlog.py):
+    place_id, fid, lat, lng, alamat. Return {norm(nama_tempat): {...}}; tempat tanpa kolom itu tidak ada.
+    """
+    path = path or cfg.INPUT_CSV
+    if not os.path.exists(path):
+        return {}
+    with open(path, "rb") as f:
+        rows = _parse(_decode(f.read()), ",")
+    if not rows:
+        return {}
+    header = [c.strip().strip('"').strip().lstrip("﻿") for c in rows[0]]
+    if "nama_tempat" not in header:
+        return {}
+    kol = {n: header.index(n) for n in ("nama_tempat", "alamat", "place_id", "fid", "lat", "lng") if n in header}
+    hasil = {}
+    for r in rows[1:]:
+        def ambil(n):
+            return r[kol[n]].strip() if n in kol and kol[n] < len(r) else ""
+        nama = rapikan_spasi(ambil("nama_tempat"))
+        if not nama or not (ambil("fid") or ambil("place_id") or ambil("lat")):
+            continue
+        try:
+            lat, lng = float(ambil("lat")), float(ambil("lng"))
+        except ValueError:
+            lat = lng = None
+        hasil.setdefault(norm(nama), {"nama": nama, "alamat": ambil("alamat"), "place_id": ambil("place_id"),
+                                      "fid": ambil("fid"), "lat": lat, "lng": lng})
+    return hasil
+
+
 def pangkas_daftar_input(nama_dihapus: set[str], path: str | None = None) -> str:
     """
-    Menghapus nama-nama tertentu dari CSV input. Salinan asli disimpan SEKALI di
-    '<nama>_sebelum_dipangkas.csv'. File baru ditulis UTF-8.
+    Menghapus nama-nama tertentu dari CSV input (semua kolom lain dipertahankan). Salinan asli disimpan
+    SEKALI di '<nama>_sebelum_dipangkas.csv'. File baru ditulis UTF-8.
     Returns path cadangan.
     """
     path = path or cfg.INPUT_CSV
@@ -431,12 +488,22 @@ def pangkas_daftar_input(nama_dihapus: set[str], path: str | None = None) -> str
     if not os.path.exists(cadangan):
         shutil.copy2(path, cadangan)
     hapus = {norm(n) for n in nama_dihapus}
-    sisa = [n for n in baca_daftar_input(path) if norm(n) not in hapus]
+    with open(path, "rb") as f:
+        rows = _parse(_decode(f.read()), ",")
+    header = [c.strip().strip('"').strip().lstrip("﻿") for c in rows[0]]
+    ix = header.index("nama_tempat")
+    terlihat, sisa = set(), []
+    for r in rows[1:]:
+        n = rapikan_spasi(r[ix]) if ix < len(r) else ""
+        if not n or norm(n) in hapus or norm(n) in terlihat:
+            continue
+        terlihat.add(norm(n))
+        sisa.append(r)
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["nama_tempat"])
-        for n in sisa:
-            w.writerow([n])
+        w.writerow(header)
+        for r in sisa:
+            w.writerow(r + [""] * (len(header) - len(r)))
     return cadangan
 
 

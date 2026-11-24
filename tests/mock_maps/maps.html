@@ -77,7 +77,8 @@
   function rand(a, b) { return a + Math.random() * (b - a); }
   function fmtNum(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
   function placeUrl(p) {
-    return '/maps/place/' + slug(p.name) + '/@-6.9,107.6,17z/data=!4m6!3m5!1s' + p.fid + '!8m2!3d-6.9!4d107.6';
+    return '/maps/place/' + slug(p.name) + '/@' + p.lat + ',' + p.lng + ',17z/data=!4m6!3m5!1s' + p.fid +
+           '!8m2!3d' + p.lat + '!4d' + p.lng;
   }
 
   // ───────────────────────────── routing ─────────────────────────────
@@ -99,6 +100,13 @@
     } else {
       app.innerHTML = '<div class="panel"><div class="hdr">' + TXT.noResult + ' <b>' + esc(q) + '</b>.</div></div>';
     }
+  } else if (path.match(/^\/maps\/place\/?$/) && /^place_id:/.test(qs.get('q') || '') || (path.match(/^\/maps\/?$/) && qs.get('cid'))) {
+    // Buka tempat lewat Google place ID (?q=place_id:...) atau cid (?cid=...), seperti Maps asli.
+    var kunciId = qs.get('cid') || qs.get('q').replace(/^place_id:/, '');
+    var tujuan = PLACES.filter(function (p) { return p.place_id === kunciId || p.cid === kunciId; })[0];
+    if (tujuan && tujuan.id_menuju) tujuan = PLACES.filter(function (p) { return p.name === tujuan.id_menuju; })[0] || tujuan;
+    if (tujuan) { history.replaceState(null, '', placeUrl(tujuan) + location.search); renderPlace(tujuan); }
+    else app.innerHTML = '<div class="panel"><div class="hdr">' + TXT.noResult + ' <b>' + esc(kunciId) + '</b>.</div></div>';
   } else if ((m = path.match(/^\/maps\/place\/([^/]+)/))) {
     var sl = m[1].replace(/\+/g, '+');
     var found = PLACES.filter(function (p) { return slug(p.name) === sl; })[0];
