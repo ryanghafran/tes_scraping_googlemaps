@@ -283,7 +283,7 @@ def test_main_data_lama_dari_csv_tidak_diduplikasi_walau_nama_kueri_berbeda(ling
     assert sum(1 for r in master if r["sumber"] == "impor-lama") == 3
 
 
-def test_main_hanya_mengambil_tempat_terpilih_saja_walau_master_sudah_besar(lingkungan, buat_mock, chrome_tersedia):
+def test_main_hanya_mengambil_tempat_terpilih_saja_walau_master_sudah_besar(lingkungan, buat_mock, chrome_tersedia, capsys):
     """Uji cepat: python scraper.py --hanya "kopi a" --target 25"""
     buat_mock([tempat("Kopi A", 200), tempat("Kopi B", 200)])
     tulis_input(["Kopi A", "Kopi B"])
@@ -294,6 +294,7 @@ def test_main_hanya_mengambil_tempat_terpilih_saja_walau_master_sudah_besar(ling
     assert scraper.main(["--hanya", "kopi a", "--target", "25", "--headless"]) == 0
     per = Counter(b["nama_tempat"] for b in baca_hasil())
     assert per["Kopi A"] == 25 and "Kopi B" not in per and per["Tempat Lain"] == 100
+    assert "ULASAN TEMPAT TERPILIH: 25 / target 25" in capsys.readouterr().out      # bukan "125 / target 25" yang membingungkan
 
 
 def test_main_cek_status_saja_tidak_mengambil_ulasan(lingkungan, buat_mock, chrome_tersedia):
@@ -412,3 +413,44 @@ def test_diagnosa_dengan_chrome_sungguhan_berhasil_dan_menulis_log_chromedriver(
     assert "BERHASIL" in keluar and "KESIMPULAN" in keluar
     log_driver = os.path.join(cfg.DIR_DEBUG, "chromedriver_diagnosa.log")
     assert os.path.exists(log_driver) and os.path.getsize(log_driver) > 0
+
+
+def test_tombol_urutkan_di_tab_ringkasan_bukan_bukti_tab_ulasan_terbuka(pb, buat_mock):
+    """Jika deretan tab terbaca, HANYA tab terpilih yang menentukan: tombol Urutkan bisa saja muncul di tab lain."""
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200)], "Kopi A", {"sort_on_overview": True})
+    st = pb.js(JS_TAB_AKTIF)
+    assert st["tombol_urutkan"] is True                          # sinyal 'longgar' menyala...
+    assert st["aktif"] is False and st["tab_terpilih"] == "Ringkasan"     # ...tetapi tab Ulasan BELUM terbuka
+    buka_ulasan(pb, info, "terbaru")
+    st = pb.js(JS_TAB_AKTIF)
+    assert st["aktif"] and st["alasan"] == "tab" and st["tab_terpilih"] == "Ulasan"
+
+
+def test_tab_yang_sudah_aktif_tanpa_klik_dicatat_alasannya_di_log(pb, buat_mock, caplog):
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 100)], "Kopi A")
+    pb.js("document.querySelector('[role=tab][data-tab-index=\"2\"]').click();")
+    with caplog.at_level(logging.INFO):
+        assert gmaps._klik_tab_ulasan(pb) is True
+    pesan = " ".join(r.message for r in caplog.records)
+    assert "sudah aktif tanpa klik" in pesan and "tab terpilih: 'Ulasan'" in pesan and "lewat: tab" in pesan
+
+
+# ─── Pemeriksa kualitas data: jangan biarkan kolom kosong merusak dataset diam-diam ───
+
+def test_peringatan_kualitas_bila_rating_tidak_terbaca_dan_data_diagnosis_disimpan(pb, buat_mock, lingkungan):
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200, mock={"no_rating_label": True})], "Kopi A")
+    h = ambil_ulasan_tempat(pb, store, info, 30, ["terbaru"])
+    assert h.baru == 30 and "tanpa rating" in h.peringatan
+    assert any(b.startswith("kualitas_") for b in os.listdir(cfg.DIR_DEBUG))
+
+
+def test_peringatan_kualitas_bila_selengkapnya_tidak_terbuka(pb, buat_mock):
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200, mock={"expand_noop": True}, long_ratio=0.7)], "Kopi A")
+    h = ambil_ulasan_tempat(pb, store, info, 40, ["terbaru"])
+    assert "masih terpotong" in h.peringatan
+
+
+def test_tanpa_masalah_tidak_ada_peringatan_kualitas(pb, buat_mock):
+    m, info, store = siap(pb, buat_mock, [tempat("Kopi A", 200)], "Kopi A")
+    h = ambil_ulasan_tempat(pb, store, info, 40, ["terbaru"])
+    assert h.peringatan == ""

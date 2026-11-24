@@ -183,6 +183,7 @@
         '<div class="fontBodyMedium"><span>' + hours + '</span></div>' +
         '<div class="preview-reviews">' +
           '<h2>Ulasan</h2>' +
+          (GLOBAL.sort_on_overview ? '<button class="HQzyZ" data-value="Sort" aria-label="' + TXT.sort + ' ulasan">' + TXT.sort + '</button>' : '') +
           previews.map(function (r) { return cardHTML(p, r, true); }).join('') +
           '<button aria-label="' + TXT.moreReviews + '" class="HHrUdb" id="more-reviews">' + TXT.moreReviews + '</button>' +
         '</div>' +
@@ -195,7 +196,9 @@
   // ───────────────────────────── kartu ulasan ─────────────────────────────
   function cardHTML(p, r, isPreview) {
     var variant = p.mock.variant || 'A';
-    var star = '<span class="' + (variant === 'B' ? 'zq9' : 'kvMYJc') + '" role="img" aria-label="' + r.rating + ' ' + TXT.stars + '"></span>';
+    var mkp = p.mock || {};
+    var star = '<span class="' + (variant === 'B' ? 'zq9' : 'kvMYJc') + '" role="img"' +
+               (mkp.no_rating_label ? '' : ' aria-label="' + r.rating + ' ' + TXT.stars + '"') + '></span>';
     var date = '<span class="' + (variant === 'B' ? 'zq8' : 'rsqaWe') + '">' + esc(r.tanggal_raw) + '</span>';
     var textHtml = '';
     if (r.teks) {
@@ -233,6 +236,7 @@
     Array.prototype.forEach.call(btns, function (b) {
       if (b.__wired) return; b.__wired = true;
       b.addEventListener('click', function (ev) {
+        if (window.__expandNoop) { ev.stopPropagation(); return; }          // simulasi: tombol 'Selengkapnya' tidak berfungsi
         var span = b.parentNode.querySelector('span[data-full]');
         if (span) span.textContent = span.getAttribute('data-full');
         b.parentNode.removeChild(b);
@@ -244,6 +248,7 @@
   // ───────────────────────────── tab ulasan + lazy loading ─────────────────────────────
   function renderReviews(p, body) {
     var mk = p.mock || {};
+    window.__expandNoop = !!mk.expand_noop;
     history.replaceState(null, '', location.pathname + (location.pathname.indexOf('!9m1!1b1') < 0 ? '!9m1!1b1' : '') + location.search);
     body.innerHTML =
       '<div class="scroll m6QErb DxyBCb kA9KIf dS8AEf XiKgde" id="scroller">' +

@@ -168,19 +168,24 @@ return {nama: t(h1),
 """
 
 JS_TAB_AKTIF = _JS_UMUM + r"""
-var tabs = Array.from(document.querySelectorAll('[role="tab"]'));
-var sel = tabs.filter(function (x) { return x.getAttribute('aria-selected') === 'true'; })[0];
-var label = '';
-if (sel) {
-  label = norm(sel.innerText);
-  if (!label) label = (sel.getAttribute('aria-label') || '').split(/\s+(?:untuk|for)\s+/i)[0];
+function labelOf(x) {
+  var l = norm(x.innerText);
+  return l || (x.getAttribute('aria-label') || '').split(/\s+(?:untuk|for)\s+/i)[0];
 }
-var tabUlasan = !!(sel && /^(ulasan|reviews?)$/i.test(label));
+var NAMA_TAB = /^(ringkasan|ikhtisar|overview|menu|ulasan|reviews?|tentang|about)$/i;
+var tabsTempat = Array.from(document.querySelectorAll('[role="tab"]')).filter(function (x) { return NAMA_TAB.test(labelOf(x)); });
+var terpilih = tabsTempat.filter(function (x) { return x.getAttribute('aria-selected') === 'true'; });
+var barTerbaca = tabsTempat.length >= 2 && terpilih.length >= 1;     // deretan tab tempat terbaca jelas
+var tabUlasan = terpilih.some(function (x) { return /^(ulasan|reviews?)$/i.test(labelOf(x)); });
 var tombolUrut = !!Array.from(document.querySelectorAll('button[data-value="Sort"], button[aria-label*="Urutkan" i], button[aria-label*="Sort" i]')).filter(nampak)[0];
 var urlUlasan = /!9m1!1b1/.test(location.href);
-return {aktif: tabUlasan || tombolUrut || urlUlasan,
-        alasan: tabUlasan ? 'tab' : (tombolUrut ? 'tombol-urutkan' : (urlUlasan ? 'url' : '')),
-        tab_terpilih: label, jumlah_tab: tabs.length};
+// Bila deretan tab terbaca, HANYA ia yang menentukan (tombol Urutkan / penanda URL bisa saja muncul di tab lain).
+// Bila tidak terbaca (struktur halaman berubah), tombol Urutkan / URL dipakai sebagai cadangan.
+var aktif = barTerbaca ? tabUlasan : (tombolUrut || urlUlasan);
+return {aktif: aktif,
+        alasan: barTerbaca ? (tabUlasan ? 'tab' : '') : (tombolUrut ? 'tombol-urutkan' : (urlUlasan ? 'url' : '')),
+        tab_terpilih: terpilih.length ? labelOf(terpilih[0]) : '', jumlah_tab: tabsTempat.length,
+        tombol_urutkan: tombolUrut, url_ulasan: urlUlasan};
 """
 
 # Kandidat elemen untuk membuka tab Ulasan, dari yang paling pasti ke yang paling longgar.
@@ -616,7 +621,10 @@ def _dinding_login_terdeteksi(pb: Peramban, konteks: str):
 
 
 def _klik_tab_ulasan(pb: Peramban) -> bool:
-    if pb.js(JS_TAB_AKTIF)["aktif"] and not ada_dinding_login(pb):
+    st = pb.js(JS_TAB_AKTIF)
+    if st["aktif"] and not ada_dinding_login(pb):
+        log.info(f"  Tab Ulasan sudah aktif tanpa klik (terverifikasi lewat: {st['alasan']}; "
+                 f"tab terpilih: '{st['tab_terpilih']}'; jumlah tab: {st['jumlah_tab']})")
         return True
     for _ in range(3):
         for k in pb.js(JS_KANDIDAT_TAB):
@@ -688,6 +696,7 @@ class HasilPanen:
     terlihat: int = 0       # jumlah kartu (termasuk tanpa teks) yang pernah terlihat
     habis: bool = False     # True: ujung daftar ulasan tercapai
     alasan: str = ""        # 'kuota' | 'habis' | 'macet' | 'waktu' | 'langkah' | 'kosong'
+    peringatan: str = ""    # masalah kualitas data (kolom kosong / teks terpotong), kosong bila baik
 
 
 def _goyang(pb: Peramban):
@@ -711,6 +720,19 @@ def _tunggu_kartu_baru(pb: Peramban, ids_dom_sebelum: set, terlihat: set, timeou
         time.sleep(0.4)
 
 
+_BATAS_KUALITAS = 0.2     # lebih dari 20% ulasan bermasalah = selector kemungkinan sudah tidak cocok dengan tampilan Maps
+
+
+def peringatan_kualitas(stat: dict) -> str:
+    """Peringatan bila banyak ulasan yang dipanen tanpa rating/tanggal/nama atau teksnya masih terpotong."""
+    n = stat["teks"]
+    if n < 10:
+        return ""
+    keterangan = {"tanpa_rating": "tanpa rating", "tanpa_tanggal": "tanpa tanggal", "tanpa_nama": "tanpa nama reviewer",
+                  "terpotong": "teksnya masih terpotong (tombol 'Selengkapnya' tidak terbuka)"}
+    return "; ".join(f"{stat[k]} dari {n} ulasan {teks}" for k, teks in keterangan.items() if stat[k] / n > _BATAS_KUALITAS)
+
+
 def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadline: float) -> HasilPanen:
     """
     Scroll daftar ulasan yang sudah terbuka sambil memanen kartu di setiap langkah.
@@ -720,6 +742,7 @@ def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadlin
     total_maps = info.get("total_ulasan")
     terlihat: set = set()
     h = HasilPanen()
+    stat = {"teks": 0, "tanpa_rating": 0, "tanpa_tanggal": 0, "tanpa_nama": 0, "terpotong": 0}
     langkah = macet = reload_n = 0
     goyang_dulu = False         # pemuat terbukti butuh digoyang -> lakukan langsung tanpa menunggu timeout
 
@@ -737,6 +760,11 @@ def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadlin
                 break                            # kuota tepat terpenuhi; sisa kartu batch ini diambil di ronde berikutnya
             if not k["teks"]:
                 continue
+            stat["teks"] += 1
+            stat["tanpa_rating"] += k["rating"] is None
+            stat["tanpa_tanggal"] += not k["tanggal"]
+            stat["tanpa_nama"] += not k["nama"]
+            stat["terpotong"] += bool(k.get("terpotong"))
             ok = store.tambah(nama, info["alamat"], k["nama"] or "Anonim", k["rating"],
                               bersihkan_tanggal(k["tanggal"]), k["teks"], id_ulasan=k["id"],
                               sumber="scrape", urutan=mode, id_tempat=info.get("id_tempat", ""))
@@ -807,6 +835,10 @@ def panen_ulasan(pb: Peramban, store, info: dict, kuota: int, mode: str, deadlin
         pb.simpan_debug(f"macet_{nama}")
         h.alasan = "macet"
         break
+    h.peringatan = peringatan_kualitas(stat)
+    if h.peringatan:
+        log.warning(f"  PERINGATAN KUALITAS DATA: {h.peringatan}")
+        pb.simpan_debug(f"kualitas_{nama}")
     return h
 
 
@@ -827,6 +859,8 @@ def ambil_ulasan_tempat(pb: Peramban, store, info: dict, kuota_total: int, dafta
         total.baru += h.baru
         total.terlihat = max(total.terlihat, h.terlihat)
         total.alasan = h.alasan
+        if h.peringatan:
+            total.peringatan = "; ".join(x for x in (total.peringatan, h.peringatan) if x)
         sisa -= h.baru
         if h.habis:
             total.habis = True

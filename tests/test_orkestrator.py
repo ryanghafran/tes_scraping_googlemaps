@@ -384,3 +384,26 @@ def test_ringkasan_teks_memuat_status_dan_total(lingkungan):
     s.tambah("A", "x", "R", 5, "x", "satu")
     out = scraper.ringkasan_teks(["A", "B"], st, s)
     assert "TOTAL ULASAN UNIK: 1 / target 5000" in out and "1.234" in out and "tutup permanen" in out
+
+
+def test_ringkasan_dengan_hanya_menampilkan_total_tempat_terpilih_bukan_total_seluruh_data(lingkungan):
+    st = siapkan_status(["A", "B"])
+    s = PenyimpananUlasan()
+    for i in range(30):
+        s.tambah("A", "x", f"r{i}", 5, "x", f"teks a {i}")
+    for i in range(100):
+        s.tambah("B", "x", f"r{i}", 5, "x", f"teks b {i}")
+    terbatas = scraper.ringkasan_teks(["A"], st, s, terbatas=True)
+    assert "ULASAN TEMPAT TERPILIH: 30 / target 5000" in terbatas and "total seluruh data: 130" in terbatas
+    assert "TOTAL ULASAN UNIK" not in terbatas
+    biasa = scraper.ringkasan_teks(["A", "B"], st, s)
+    assert "TOTAL ULASAN UNIK: 130 / target 5000" in biasa
+
+
+def test_peringatan_kualitas_data_ditampilkan_per_tempat(lingkungan, monkeypatch, capsys):
+    status, store = siapkan_status(["A"]), PenyimpananUlasan()
+    monkeypatch.setattr(scraper, "ambil_ulasan_tempat", lambda *a, **k: HasilPanen(
+        baru=5, terlihat=10, alasan="kuota", peringatan="30 dari 30 ulasan tanpa rating"))
+    jalankan_ulasan(["A"], status, store)
+    keluar = capsys.readouterr().out
+    assert "PERINGATAN KUALITAS DATA: 30 dari 30 ulasan tanpa rating" in keluar and "debug/" in keluar

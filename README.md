@@ -210,6 +210,12 @@ tempat sehingga tidak cukup untuk target ini.
 Nama resmi yang terpilih tampil di log dan di kolom `nama_tempat`. Jika berbeda dari yang dimaksud, tulis nama di
 `daftar_coffeeshop.csv` lebih spesifik (mis. tambahkan nama jalan).
 
+**Muncul "PERINGATAN KUALITAS DATA"?**
+Artinya lebih dari 20% ulasan yang baru dipanen tidak punya rating / tanggal / nama reviewer, atau teksnya masih
+terpotong (tombol "Selengkapnya" tidak terbuka). Biasanya tampilan Google Maps berubah dan salah satu bacaan kolom tidak
+cocok lagi. Scraper tetap berjalan dan menyimpan screenshot + HTML ke `debug/` (nama berawalan `kualitas_`); kirim
+folder itu agar bacaannya bisa diperbaiki. Hentikan dulu bila Anda tidak ingin data yang kolomnya kosong ikut tersimpan.
+
 **Masih macet / hasil aneh?**
 Folder `debug/` berisi screenshot + HTML saat terjadi masalah (tab Ulasan gagal dibuka, daftar kosong, macet, CAPTCHA).
 Sertakan folder itu beserta `scraper_run.log` saat meminta bantuan.

@@ -359,6 +359,9 @@ def tahap_ulasan(pb: Peramban, daftar: list[str], status: StatusTempat, store: P
             print(f"    +{hasil.baru} ulasan ({hasil.alasan}) | total tempat ini: "
                   f"{store.jumlah_tempat(info['nama_resmi'])} | TOTAL: {total()} / {target}")
             log.info(f"  Selesai: +{hasil.baru} ({hasil.alasan}); total {total()}/{target}")
+            if hasil.peringatan:
+                print(f"    PERINGATAN KUALITAS DATA: {hasil.peringatan}")
+                print("    (kemungkinan tampilan Google Maps berubah; periksa folder debug/ lalu kirim ke pembuat scraper)")
 
             if cfg.BATAS_ULASAN_PER_SESI and sesi.baru >= cfg.BATAS_ULASAN_PER_SESI and total() < target:
                 istirahat(pb, sesi)
@@ -372,7 +375,7 @@ def tahap_ulasan(pb: Peramban, daftar: list[str], status: StatusTempat, store: P
 
 # ─── Ringkasan ────────────────────────────────────────────────────────────────
 
-def ringkasan_teks(daftar: list[str], status: StatusTempat, store: PenyimpananUlasan) -> str:
+def ringkasan_teks(daftar: list[str], status: StatusTempat, store: PenyimpananUlasan, terbatas: bool = False) -> str:
     baris = ["", "=" * 78, "  RINGKASAN", "=" * 78,
              f"  {'Tempat':<38}{'Status':<17}{'Tersimpan':>9}{'Di Maps':>9}"]
     for n in daftar:
@@ -383,7 +386,11 @@ def ringkasan_teks(daftar: list[str], status: StatusTempat, store: PenyimpananUl
         jml = store.jumlah_tempat(s["nama_resmi"]) if s["nama_resmi"] else 0
         di_maps = f"{s['total_ulasan']:,}".replace(",", ".") if s["total_ulasan"] else "-"
         baris.append(f"  {nama:<38}{st.replace('_', ' '):<17}{jml:>9}{di_maps:>9}")
-    baris += ["-" * 78, f"  TOTAL ULASAN UNIK: {store.total()} / target {cfg.TARGET_TOTAL_ULASAN}"]
+    if terbatas:       # --hanya: target dihitung untuk tempat terpilih saja
+        baris += ["-" * 78, f"  ULASAN TEMPAT TERPILIH: {hitung_total(daftar, status, store, True)} / target "
+                            f"{cfg.TARGET_TOTAL_ULASAN}   (total seluruh data: {store.total()})"]
+    else:
+        baris += ["-" * 78, f"  TOTAL ULASAN UNIK: {store.total()} / target {cfg.TARGET_TOTAL_ULASAN}"]
     tutup = [n for n in status.data.values() if n["status_buka"] in ("tutup_permanen", "tutup_sementara")]
     if tutup:
         baris.append(f"  Cafe tutup (dibuang dari daftar): {len(tutup)}  -> {cfg.FILE_TUTUP}")
@@ -516,6 +523,7 @@ def jalankan(o: argparse.Namespace) -> int:
     except (OSError, ValueError) as e:
         log.error(f"Tidak bisa membaca daftar input: {e}")
         return 1
+    terbatas = bool(o.hanya)
     if o.hanya:
         kata = [norm(k) for k in o.hanya]
         daftar = [n for n in daftar if any(k in norm(n) for k in kata)]
@@ -537,7 +545,7 @@ def jalankan(o: argparse.Namespace) -> int:
         store.tutup()
         urutan = [status.ambil(n)["nama_resmi"] for n in daftar]
         path = store.ekspor_csv(urutan_tempat=urutan)
-        print(ringkasan_teks(daftar, status, store))
+        print(ringkasan_teks(daftar, status, store, terbatas))
         print(f"  Hasil CSV : {path}")
         print(f"  Log       : {cfg.LOG_RUN}\n")
         return kode
@@ -546,8 +554,6 @@ def jalankan(o: argparse.Namespace) -> int:
         return selesai(0)
 
     daftar = pangkas_tutup(daftar, status)          # cafe yang sudah diketahui tutup dibuang dulu (tanpa browser)
-
-    terbatas = bool(o.hanya)
 
     def perlu_ulasan() -> bool:
         return hitung_total(daftar, status, store, terbatas) < cfg.TARGET_TOTAL_ULASAN and any(

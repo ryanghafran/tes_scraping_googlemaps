@@ -35,7 +35,8 @@ KALIMAT_PANJANG = (" Saya datang bersama keluarga pada sore hari dan memesan beb
                    " misalnya kebersihan meja dan kecepatan penyajian ketika tempat sedang ramai pengunjung.")
 
 
-def buat_ulasan(idx_tempat: int, nama: str, total: int, text_ratio: float, pakai_balasan: bool = True):
+def buat_ulasan(idx_tempat: int, nama: str, total: int, text_ratio: float, pakai_balasan: bool = True,
+                long_ratio: float = 0.3):
     rng = random.Random(1000 + idx_tempat)
     hasil = []
     rels = list(range(total))
@@ -46,7 +47,7 @@ def buat_ulasan(idx_tempat: int, nama: str, total: int, text_ratio: float, pakai
         teks = ""
         if ada_teks:
             teks = f"Ulasan nomor {i} tentang {nama}. {rng.choice(KALIMAT)}"
-            if rng.random() < 0.3:           # ulasan panjang -> tampil terpotong + tombol Selengkapnya
+            if rng.random() < long_ratio:    # ulasan panjang -> tampil terpotong + tombol Selengkapnya
                 teks += KALIMAT_PANJANG
         balasan = ""
         if pakai_balasan and rng.random() < 0.15:
@@ -80,7 +81,8 @@ class MockMaps:
                 "closed_now": spec.get("closed_now", False),
                 "rating": spec.get("rating", 4.5), "total": total, "mock": mock,
                 "reviews": buat_ulasan(n, nama, jumlah, spec.get("text_ratio", 0.6),
-                                       pakai_balasan=(mock.get("variant", "A") == "A" or spec.get("balasan_di_b", False))),
+                                       pakai_balasan=(mock.get("variant", "A") == "A" or spec.get("balasan_di_b", False)),
+                                       long_ratio=spec.get("long_ratio", 0.3)),
             }
             self.places.append(p)
         self._port = port

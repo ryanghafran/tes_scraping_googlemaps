@@ -10,6 +10,7 @@ from selenium.common.exceptions import (
 import konfigurasi as cfg
 from gmaps import (
     angka_dari_teks,
+    peringatan_kualitas,
     bersihkan_tanggal,
     deteksi_status_buka,
     id_tempat_dari_url,
@@ -119,3 +120,23 @@ class DriverPalsu:
 ])
 def test_deteksi_halangan(url, teks, ada_panel, harapan):
     assert deteksi_halangan(DriverPalsu(url, teks, ada_panel)) == harapan
+
+
+# ─── Pemeriksa kualitas data ──────────────────────────────────────────────────
+
+def _stat(teks=100, tanpa_rating=0, tanpa_tanggal=0, tanpa_nama=0, terpotong=0):
+    return {"teks": teks, "tanpa_rating": tanpa_rating, "tanpa_tanggal": tanpa_tanggal,
+            "tanpa_nama": tanpa_nama, "terpotong": terpotong}
+
+
+def test_peringatan_kualitas_hanya_bila_lebih_dari_20_persen_bermasalah():
+    assert peringatan_kualitas(_stat()) == ""
+    assert peringatan_kualitas(_stat(tanpa_rating=20)) == ""                      # tepat 20%: belum dianggap masalah
+    assert "21 dari 100 ulasan tanpa rating" in peringatan_kualitas(_stat(tanpa_rating=21))
+    banyak = peringatan_kualitas(_stat(tanpa_rating=100, tanpa_tanggal=50, tanpa_nama=30, terpotong=40))
+    assert all(k in banyak for k in ("tanpa rating", "tanpa tanggal", "tanpa nama reviewer", "masih terpotong"))
+
+
+def test_peringatan_kualitas_butuh_sampel_minimal_10_ulasan():
+    assert peringatan_kualitas(_stat(teks=9, tanpa_rating=9)) == ""
+    assert "tanpa rating" in peringatan_kualitas(_stat(teks=10, tanpa_rating=10))
